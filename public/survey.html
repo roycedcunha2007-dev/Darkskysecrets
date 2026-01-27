@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Survey</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+:root{
+  --glass: rgba(10,10,30,0.65);
+  --glow: #6b9aff;
+  --accent: #a0c4ff;
+  --text: #ffffff;
+}
+
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* BACKGROUND */
+body{
+  font-family:'Montserrat',sans-serif;
+  color:var(--text);
+  background:black;
+}
+
+video.bg{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at top,rgba(0,0,0,.35),rgba(0,0,0,.92));
+  z-index:-1;
+}
+
+/* NAVBAR */
+.navbar{
+  position:fixed;
+  top:0;
+  right:0;
+  left:0;
+  padding:18px 40px;
+  display:flex;
+  justify-content:flex-end;
+  gap:30px;
+  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,.4);
+  z-index:5;
+}
+
+.navbar a{
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+  position:relative;
+}
+
+.navbar a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:0;
+  height:2px;
+  background:var(--accent);
+  transition:.3s;
+}
+
+.navbar a:hover::after{
+  width:100%;
+}
+
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:120px 20px 80px;
+}
+
+/* INTRO */
+.intro{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.intro h1{
+  font-family:'Orbitron';
+  font-size:48px;
+  background:linear-gradient(135deg,#fff,var(--accent));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.intro p{
+  margin-top:15px;
+  font-size:18px;
+  opacity:.95;
+}
+
+.quote{
+  margin-top:18px;
+  color:var(--accent);
+  font-style:italic;
+}
+
+/* CARD */
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border-radius:20px;
+  padding:30px;
+  margin-bottom:28px;
+  box-shadow:0 0 35px rgba(120,160,255,.25);
+}
+
+label.question{
+  font-weight:600;
+  margin-bottom:14px;
+  display:block;
+}
+
+/* INPUTS */
+input[type=text],
+input[type=number],
+textarea,
+select{
+  width:100%;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.2);
+  background:black;
+  color:white;
+  font-size:15px;
+  outline:none;
+}
+
+textarea{resize:none}
+
+select{
+  appearance:none;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--accent) 50%),
+    linear-gradient(135deg,var(--accent) 50%,transparent 50%);
+  background-position:
+    calc(100% - 22px) calc(1em + 4px),
+    calc(100% - 14px) calc(1em + 4px);
+  background-size:8px 8px;
+  background-repeat:no-repeat;
+}
+
+select:focus,
+input:focus,
+textarea:focus{
+  box-shadow:0 0 18px var(--glow);
+  border-color:var(--accent);
+}
+
+/* OPTIONS GRID */
+.options{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  margin-top:10px;
+}
+
+.option-card{
+  padding:14px 16px;
+  border-radius:14px;
+  background:rgba(255,255,255,.07);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  transition:.3s;
+}
+
+.option-card:hover{
+  background:rgba(120,160,255,.18);
+  box-shadow:0 0 20px rgba(120,160,255,.4);
+}
+
+.option-card input{
+  accent-color:var(--accent);
+  transform:scale(1.2);
+}
+
+/* SUBMIT */
+button.submit{
+  display:block;
+  margin:70px auto 0;
+  padding:18px 55px;
+  border:none;
+  border-radius:45px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--glow),var(--accent));
+  color:black;
+  transition:.3s;
+}
+
+button.submit:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 35px var(--glow);
+}
+/* FORM */
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 15px;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.contact-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #6b9aff, #9bbcff);
+  color: black;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(120,160,255,0.6);
+}
+
+/* SOCIAL ICONS */
+.social-icons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  font-size: 28px;
+}
+
+.social-icons a {
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 12px #a0c4ff);
+}
+
+/* QUOTE */
+.contact-quote {
+  margin-top: 35px;
+  font-size: 14px;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .contact-card {
+    padding: 30px 20px;
+  }
+}
+
+/* CERTIFICATE OVERLAY */
+#certificate{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:20;
+}
+
+.cert{
+  background:linear-gradient(145deg,#0a0a1e,#04040c);
+  padding:45px;
+  border-radius:25px;
+  max-width:720px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 0 60px rgba(150,200,255,.4);
+}
+
+.cert h2{
+  font-family:'Orbitron';
+}
+
+.cert-name{
+  font-size:32px;
+  color:var(--accent);
+  margin:18px 0;
+}
+
+.cert-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  justify-content:center;
+  margin-top:35px;
+}
+
+.cert-actions button{
+  padding:12px 26px;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.share{background:#6b9aff}
+.download{background:#9cffac}
+.close{background:#ff8a8a}
+
+@media(max-width:600px){
+  .intro h1{font-size:36px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- BG VIDEO -->
+<video class="bg" autoplay muted loop playsinline>
+  <source src="black hole.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="Expolre.html">Let's Explore</a>
+  <a href="missions.html">Missions</a>
+  <a href="survey.html">Survey</a>
+</div>
+
+<div class="container">
+
+<div class="intro">
+  <h1>Cosmic Awareness Survey</h1>
+  <p>
+    This short survey explores how people experience the night sky,
+    space exploration, and humanity's place in the universe.
+    It takes less than 5 minutes and directly supports a student-led research project.
+  </p>
+  <div class="quote">
+    "Somewhere, something incredible is waiting to be known." — Carl Sagan
+  </div>
+</div>
+
+<form id="surveyForm">
+
+<div class="card">
+<label class="question">Your Name</label>
+<input type="text" id="username" required>
+</div>
+
+
+
+<!-- Q2 -->
+<div class="card">
+<label>Your Age</label>
+<input type="number" required>
+</div>
+
+<!-- Q3 -->
+<div class="card">
+<label>What area do you live in?</label>
+<select>
+<option>Rural</option>
+<option>Semi-rural</option>
+<option>Semi-urban</option>
+<option>Urban</option>
+</select>
+</div>
+
+<!-- Q4 -->
+<div class="card">
+<label>How dark is your night sky?</label>
+<select>
+<option>Very bright</option>
+<option>Bright</option>
+<option>Moderately dark</option>
+<option>Dark</option>
+<option>Very dark</option>
+</select>
+</div>
+
+<!-- Q5 -->
+<div class="card">
+<label>Can you see the Milky Way band from where you live?</label>
+<select>
+<option>Yes, clearly</option>
+<option>Faintly</option>
+<option>Occasionally</option>
+<option>No, never</option>
+<option>Not sure</option>
+</select>
+</div>
+
+<!-- Q6 -->
+<div class="card">
+<label>Which part of space do you find more mysterious?</label>
+<select>
+<option>Dark matter / Dark energy</option>
+<option>Black holes</option>
+<option>Origin of the universe</option>
+<option>Multiverse theory</option>
+<option>Extraterrestrial life</option>
+</select>
+</div>
+
+<!-- Q7 -->
+<div class="card">
+<label>How likely do you think alien life exists?</label>
+<select>
+<option>1 – Most likely</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5 – Certain</option>
+</select>
+</div>
+
+<!-- Q8 -->
+<div class="card">
+<label>Celestial events you have seen (multiple)</label>
+<div class="options">
+<label><input type="checkbox"> Meteor shower</label>
+<label><input type="checkbox"> Solar eclipse</label>
+<label><input type="checkbox"> Lunar eclipse</label>
+<label><input type="checkbox"> ISS flyover</label>
+<label><input type="checkbox"> None</label>
+</div>
+</div>
+
+<!-- Q9 -->
+<div class="card">
+<label>Do power outages make the sky darker in your area?</label>
+<select>
+<option>Very often</option>
+<option>Sometimes</option>
+<option>Rarely</option>
+<option>Never</option>
+<option>No idea</option>
+</select>
+</div>
+
+<!-- Q10 -->
+<div class="card">
+<label>Which future mission excites you most?</label>
+<select>
+<option>Artemis</option>
+<option>Mars Sample Return</option>
+<option>Europa Clipper</option>
+<option>Interstellar Probe</option>
+<option>Gaganyaan</option>
+</select>
+</div>
+
+<!-- Q11 -->
+<div class="card">
+<label>Should governments invest more in space exploration?</label>
+<select>
+<option>Yes, much more</option>
+<option>A little more</option>
+<option>Current level is fine</option>
+<option>Less</option>
+<option>Should not invest</option>
+</select>
+</div>
+
+<!-- Q12 -->
+<div class="card">
+<label>Why do you think so? (2–3 lines)</label>
+<textarea rows="3"></textarea>
+</div>
+
+<!-- Q13 -->
+<div class="card">
+<label>Biggest benefit of space exploration</label>
+<select>
+<option>Technology & innovation</option>
+<option>Understanding the universe</option>
+<option>Protecting Earth</option>
+<option>Discovering life</option>
+<option>Human survival</option>
+<option>Inspiration</option>
+</select>
+</div>
+
+<!-- Q14 -->
+<div class="card">
+<label>Which would you support more? (multiple)</label>
+<div class="options">
+<label><input type="checkbox"> Space tourism</label>
+<label><input type="checkbox"> Scientific missions</label>
+<label><input type="checkbox"> Planetary defense</label>
+<label><input type="checkbox"> Interstellar exploration</label>
+<label><input type="checkbox"> All equally</label>
+</div>
+</div>
+
+<!-- Q15 -->
+<div class="card">
+<label>Should space exploration be prioritized over Earth issues? Why?</label>
+<textarea rows="3"></textarea>
+</div>
+
+<!-- Q16 -->
+<div class="card">
+<label>How do people in your area perceive astronomy?</label>
+<textarea rows="3"></textarea>
+</div>
+
+<!-- Q17 -->
+<div class="card">
+<label>How does space exploration influence human identity?</label>
+<textarea rows="3"></textarea>
+</div>
+
+<!-- Q18 -->
+<div class="card">
+<label>Are people becoming more or less aware of the universe above them? Why?</label>
+<textarea rows="3"></textarea>
+</div>
+
+<button class="submit" type="submit">Submit Survey</button>
+
+</form>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section">
+  <div class="contact-card">
+
+    <h2 class="contact-title">Get in Touch</h2>
+    <p class="contact-subtitle">
+      Feel free to reach out for collaborations, feedback, or just to say hi.
+    </p>
+
+    <!-- DIRECT CONTACT FORM -->
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <textarea rows="4" placeholder="Your Message" required></textarea>
+
+      <button type="submit" class="contact-btn">
+        Send Message
+      </button>
+    </form>
+
+    <!-- SOCIAL ICONS -->
+    <div class="social-icons">
+      <a href="tel:8459441374" title="Call">
+        📞
+      </a>
+
+      <a href="mailto:royce.dcunha2007@gmail.com" title="Email">
+        ✉️
+      </a>
+
+      <a href="https://www.instagram.com/roycedcunha3?igsh=Mm1oZXkyd2Rydm04"
+         target="_blank" title="Instagram">
+        📷
+      </a>
+
+      <a href="https://www.linkedin.com/in/royce-dcunha-6ab002397"
+         target="_blank" title="LinkedIn">
+        💼
+      </a>
+
+      <a href="https://github.com/roycedcunha2007-dev"
+         target="_blank" title="GitHub">
+        💻
+      </a>
+    </div>
+
+    <p class="contact-quote">
+      "Somewhere, something incredible is waiting to be known." — Carl Sagan
+    </p>
+
+  </div>
+</section>
+
+
+</div>
+
+<!-- CERTIFICATE -->
+<div id="certificate">
+<div class="cert" id="certBox">
+<h2>Certificate of Participation</h2>
+<p>This certificate is proudly presented to</p>
+<div class="cert-name" id="certName"></div>
+<p>
+Thank you for contributing to the Cosmic Awareness Survey.
+Your response helps understand how humanity perceives the universe.
+</p>
+<p class="quote">
+"The cosmos is within us. We are made of star-stuff." — Carl Sagan
+</p>
+
+<div class="cert-actions">
+<button class="share" onclick="shareCert()">Share</button>
+<button class="download" onclick="downloadCert()">Download</button>
+<button class="close" onclick="closeCert()">Review Answers</button>
+</div>
+</div>
+</div>
+
+<script>
+const form = document.getElementById("surveyForm");
+const cert = document.getElementById("certificate");
+const certName = document.getElementById("certName");
+
+form.addEventListener("submit", e=>{
+  e.preventDefault();
+  certName.textContent = document.getElementById("username").value;
+  cert.style.display="flex";
+});
+
+function closeCert(){
+  cert.style.display="none";
+}
+
+function shareCert(){
+  if(navigator.share){
+    navigator.share({
+      title:"Cosmic Survey",
+      text:"I just participated in a cosmic awareness survey 🌌",
+      url:window.location.href
+    });
+  }else{
+    alert("Sharing not supported on this device");
+  }
+}
+
+function downloadCert(){
+  html2canvas(document.getElementById("certBox")).then(canvas=>{
+    const link=document.createElement("a");
+    link.download="Cosmic_Survey_Certificate.png";
+    link.href=canvas.toDataURL();
+    link.click();
+  });
+}
+</script>
+
+<script src="survey.js"></script>
+<script src="contact.js"></script>
+
+</body>
+</html>

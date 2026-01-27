@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dark Sky</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- EXISTING STYLES -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- MOBILE FIXES (ADDED, NOTHING REMOVED) -->
+  <style>
+    @media (max-width: 768px) {
+
+      body {
+        overflow-x: hidden;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 20px;
+      }
+
+      .navbar nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+      }
+
+      /* HERO */
+      .hero h1 {
+        font-size: 1.9rem;
+        line-height: 1.3;
+        text-align: center;
+      }
+
+      .hero-sub {
+        font-size: 1rem;
+        text-align: center;
+      }
+
+      .profile {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* INFO PANELS */
+      .info-panel {
+        margin: 20px;
+        padding: 20px;
+        font-size: 0.95rem;
+      }
+
+      /* COMPARE SECTIONS */
+      .compare {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .compare-images {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .compare-images img {
+        width: 100%;
+        height: auto;
+      }
+
+      /* POLLUTION MAP */
+      .pollution-map img {
+        width: 100%;
+        height: auto;
+      }
+
+      .map-overlay {
+        padding: 20px;
+        text-align: center;
+      }
+
+      /* SOLUTIONS GRID */
+      .solution-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 0 20px;
+      }
+
+      .card {
+        font-size: 0.95rem;
+        padding: 16px;
+      }
+
+      footer {
+        font-size: 0.85rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="bg">
+  <video autoplay muted loop playsinline>
+    <source src="black hole.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo">Dark Sky</div>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="Expolre.html">Let’s Explore</a>
+    <a href="missions.html">Missions</a>
+    <a href="survey.html">Survey</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero reveal">
+  <h1>The night sky is still there.<br>We just can’t see it anymore.</h1>
+
+  <p class="hero-sub">
+    I’m <strong>Royce Dcunha</strong>, a student and space enthusiast.
+    This project explores how artificial light is erasing our view of the universe.
+  </p>
+
+  <div class="profile">
+    <img src="prof.jpeg" alt="Royce Dcunha">
+    <span>Royce Dcunha</span>
+  </div>
+
+  <span class="scroll">Scroll ↓</span>
+</section>
+
+<section class="info-panel reveal">
+  <p>
+    Light pollution affects sleep cycles, wildlife behavior, energy consumption,
+    and disconnects humanity from the cosmos that once guided civilizations.
+  </p>
+</section>
+
+<section class="compare reveal">
+  <div class="compare-text info-panel small">
+    <h2>Same planet.<br>Different skies.</h2>
+    <p>City lights overpower stars. Darkness reveals the Milky Way.</p>
+  </div>
+
+  <div class="compare-images">
+    <figure>
+      <img src="light pollution 8.jpeg">
+      <figcaption>High light pollution</figcaption>
+    </figure>
+    <figure>
+      <img src="light pollution 1.jpeg">
+      <figcaption>Zero light pollution</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="compare reveal">
+  <div class="compare-text info-panel small">
+    <h2>India at night</h2>
+    <p>Satellite imagery exposes how brightness spreads across cities.</p>
+  </div>
+
+  <div class="compare-images">
+    <figure>
+      <img src="night view.jpeg">
+      <figcaption>Satellite view</figcaption>
+    </figure>
+    <figure>
+      <img src="light pollution map.jpeg">
+      <figcaption>Pollution heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="pollution-map reveal">
+  <img src="levels.jpeg">
+  <div class="map-overlay">
+    <h2>Light Pollution Levels</h2>
+    <p>Brighter regions mark where the night sky has disappeared.</p>
+  </div>
+</section>
+
+<section class="compare reveal">
+  <div class="compare-text info-panel small">
+    <h2>Mumbai vs Hanle</h2>
+    <p>Urban glow hides stars. High-altitude darkness reveals the universe.</p>
+  </div>
+
+  <div class="compare-images">
+    <figure>
+      <img src="mumbai.jpeg">
+      <figcaption>Mumbai</figcaption>
+    </figure>
+    <figure>
+      <img src="hanle.jpeg">
+      <figcaption>Hanle, Ladakh</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="solutions reveal">
+  <h2>How We Can Reduce Light Pollution</h2>
+
+  <div class="solution-grid">
+    <div class="card">Use shielded lighting</div>
+    <div class="card">Switch to warm LEDs</div>
+    <div class="card">Install motion sensors</div>
+    <div class="card">Turn off unnecessary lights</div>
+    <div class="card">Create dark sky reserves</div>
+    <div class="card">Spread public awareness</div>
+  </div>
+</section>
+
+</main>
+
+<footer>© Royce Dcunha</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

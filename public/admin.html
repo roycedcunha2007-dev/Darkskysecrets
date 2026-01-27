@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Survey Responses</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b0b;
+      color: #fff;
+      padding: 20px;
+    }
+
+    input {
+      padding: 8px;
+      margin-bottom: 15px;
+      width: 300px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #222;
+    }
+
+    tr:nth-child(even) {
+      background: #161616;
+    }
+
+    tr:hover {
+      background: #2a2a2a;
+      cursor: pointer;
+    }
+
+    .pagination {
+      margin-top: 15px;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+      border-radius: 6px;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🔐 Survey Responses (Admin)</h1>
+
+<input type="text" id="search" placeholder="Search by name..." />
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Submitted At</th>
+      <th>Area</th>
+      <th>Awareness Trend</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<div class="pagination">
+  <button id="prev">⬅ Prev</button>
+  <span id="pageInfo"></span>
+  <button id="next">Next ➡</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✖</span>
+    <h3>Full Survey Response</h3>
+    <pre id="modalData"></pre>
+  </div>
+</div>
+
+<script>
+  const LIMIT = 10;
+  let allData = [];
+  let filteredData = [];
+  let currentPage = 1;
+
+  const adminPassword = prompt("Enter admin password:");
+  if (!adminPassword) {
+    document.body.innerHTML = "";
+    throw new Error("No password");
+  }
+
+  fetch("/admin/surveys", {
+    headers: {
+      "x-admin-password": adminPassword
+    }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Unauthorized");
+      return res.json();
+    })
+    .then(result => {
+      allData = result.data;
+      filteredData = allData;
+      render();
+    })
+    .catch(() => {
+      alert("Unauthorized access");
+      document.body.innerHTML = "";
+    });
+
+  function render() {
+    const body = document.getElementById("tableBody");
+    body.innerHTML = "";
+
+    const start = (currentPage - 1) * LIMIT;
+    const pageData = filteredData.slice(start, start + LIMIT);
+
+    pageData.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>${new Date(item.createdAt).toLocaleString()}</td>
+        <td>${item.area || "-"}</td>
+        <td>${item.awarenessTrend || "-"}</td>
+      `;
+      row.onclick = () => openModal(item);
+      body.appendChild(row);
+    });
+
+    document.getElementById("pageInfo").textContent =
+      `Page ${currentPage} of ${Math.ceil(filteredData.length / LIMIT)}`;
+  }
+
+  document.getElementById("search").addEventListener("input", e => {
+    const value = e.target.value.toLowerCase();
+    filteredData = allData.filter(s =>
+      s.name.toLowerCase().includes(value)
+    );
+    currentPage = 1;
+    render();
+  });
+
+  document.getElementById("next").onclick = () => {
+    if (currentPage * LIMIT < filteredData.length) {
+      currentPage++;
+      render();
+    }
+  };
+
+  document.getElementById("prev").onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      render();
+    }
+  };
+
+  function openModal(data) {
+    document.getElementById("modalData").textContent =
+      JSON.stringify(data, null, 2);
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+</script>
+
+</body>
+</html>

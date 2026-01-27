@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Missions Gallery – Dark Sky</title>
+
+<!-- MODEL VIEWER -->
+<script type="module"
+  src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Orbitron',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  height:64px;
+  padding:0 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  z-index:10;
+}
+.navbar nav a{
+  margin-left:22px;
+  color:#bbb;
+  text-decoration:none;
+  font-size:14px;
+}
+.navbar nav a.active,
+.navbar nav a:hover{color:#fff}
+
+/* ================= BACKGROUND VIDEO ================= */
+.bg-video{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+}
+.bg-video video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(.6) contrast(1.25);
+}
+
+/* FALLBACK */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center,#0a0a1a 0%,#000 75%);
+  z-index:-2;
+}
+
+/* ================= PAGE ================= */
+.page{
+  padding:110px 6% 80px;
+}
+
+/* ================= HEADER ================= */
+.page h1{
+  font-size:54px;
+  text-align:center;
+  margin-bottom:16px;
+  background:linear-gradient(135deg,#fff,#9bbcff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.quote{
+  text-align:center;
+  color:#9bbcff;
+  font-size:17px;
+  margin-bottom:70px;
+}
+
+/* ================= GRID ================= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:50px;
+}
+
+/* ================= CARD ================= */
+.card{
+  background:rgba(10,10,30,.85);
+  border-radius:22px;
+  padding:30px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 0 30px rgba(100,150,255,.18);
+  transition:.4s ease;
+}
+.card:hover{
+  transform:translateY(-8px);
+  box-shadow:
+    0 0 45px rgba(120,180,255,.6),
+    0 0 100px rgba(120,180,255,.3);
+}
+
+/* ================= MODEL ================= */
+model-viewer{
+  width:100%;
+  height:360px;
+  margin-bottom:22px;
+  --poster-color:transparent;
+}
+
+/* ================= TEXT ================= */
+.card h2{
+  text-align:center;
+  margin-bottom:16px;
+  font-size:24px;
+}
+ul{list-style:none}
+li{
+  font-size:15px;
+  line-height:1.7;
+  margin-bottom:10px;
+  padding-left:22px;
+  position:relative;
+}
+li::before{
+  content:"→";
+  position:absolute;
+  left:0;
+  color:#6b9aff;
+}
+
+/* ================= CONCLUSION ================= */
+.conclusion{
+  margin-top:90px;
+  padding:36px;
+  text-align:center;
+  background:rgba(10,10,30,.7);
+  border-radius:20px;
+  max-width:900px;
+  margin-inline:auto;
+  box-shadow:0 0 40px rgba(100,150,255,.25);
+  font-size:17px;
+  line-height:1.9;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:600px){
+  .page h1{font-size:40px}
+  .quote{font-size:15px}
+  model-viewer{height:260px}
+  .navbar nav a{margin-left:14px;font-size:13px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div>Dark Sky</div>
+  <nav>
+    <a href="index.html" target="_self">Home</a>
+    <a href="Expolre.html" target="_self">Let's Explore</a>
+    <a href="missions.html" class="active" target="_self">Missions</a>
+    <a href="survey.html" target="_self">Survey</a>
+  </nav>
+</header>
+
+<!-- BACKGROUND VIDEO -->
+<div class="bg-video">
+  <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+    <source src="black hole.mp4" type="video/mp4">
+  </video>
+</div>
+<div class="overlay"></div>
+
+<section class="page">
+  <h1>Missions Gallery</h1>
+  <p class="quote">
+    “Every spacecraft here is a question humanity dared to ask the universe.”
+  </p>
+
+  <div class="grid">
+
+    <!-- ISS -->
+    <div class="card">
+      <model-viewer src="la_station_spatiale_internationale_iss.glb" auto-rotate camera-controls exposure="1.3"></model-viewer>
+      <h2>International Space Station</h2>
+      <ul>
+        <li>Largest structure ever built in orbit</li>
+        <li>Continuously inhabited since 2000</li>
+        <li>Travels at 28,000 km/h</li>
+        <li>Symbol of global cooperation</li>
+      </ul>
+    </div>
+
+    <!-- JWST -->
+    <div class="card">
+      <model-viewer src="jwst_james_webb_space_telescope.glb" auto-rotate camera-controls exposure="1.35"></model-viewer>
+      <h2>James Webb Space Telescope</h2>
+      <ul>
+        <li>Most powerful telescope ever built</li>
+        <li>Infrared observations</li>
+        <li>Studies early galaxies</li>
+        <li>Located at L2 point</li>
+      </ul>
+    </div>
+
+    <!-- HUBBLE -->
+    <div class="card">
+      <model-viewer src="hubble_space_telescope.glb" auto-rotate camera-controls exposure="1.25"></model-viewer>
+      <h2>Hubble Space Telescope</h2>
+      <ul>
+        <li>Operating since 1990</li>
+        <li>Revolutionized astronomy</li>
+        <li>Captured iconic deep space images</li>
+        <li>Visible & UV spectrum</li>
+      </ul>
+    </div>
+
+    <!-- CASSINI -->
+    <div class="card">
+      <model-viewer src="cassini_huygens.glb" auto-rotate camera-controls exposure="1.2"></model-viewer>
+      <h2>Cassini–Huygens</h2>
+      <ul>
+        <li>Explored Saturn system</li>
+        <li>Discovered subsurface oceans</li>
+        <li>Studied rings & moons</li>
+        <li>Grand Finale in 2017</li>
+      </ul>
+    </div>
+
+    <!-- VOYAGER -->
+    <div class="card">
+      <model-viewer src="voyager_i__ii__nasa_interstellar_mission.glb" auto-rotate camera-controls exposure="1.15"></model-viewer>
+      <h2>Voyager 1</h2>
+      <ul>
+        <li>Farthest human-made object</li>
+        <li>Launched in 1977</li>
+        <li>Entered interstellar space</li>
+        <li>Still transmitting</li>
+      </ul>
+    </div>
+
+    <!-- PARKER -->
+    <div class="card">
+      <model-viewer src="parker_solar_probe.glb" auto-rotate camera-controls exposure="1.25"></model-viewer>
+      <h2>Parker Solar Probe</h2>
+      <ul>
+        <li>Closest spacecraft to the Sun</li>
+        <li>Heat shielded</li>
+        <li>Studies solar wind</li>
+        <li>Fastest spacecraft ever</li>
+      </ul>
+    </div>
+
+    <!-- CHANDRAYAAN -->
+    <div class="card">
+      <model-viewer src="chandrayaan-2_in_flight_configuration.glb" auto-rotate camera-controls exposure="1.2"></model-viewer>
+      <h2>Chandrayaan-2</h2>
+      <ul>
+        <li>India’s lunar mission</li>
+        <li>Mapped Moon surface</li>
+        <li>Detected water molecules</li>
+        <li>Orbiter still active</li>
+      </ul>
+    </div>
+
+    <!-- CURIOSITY -->
+    <div class="card">
+      <model-viewer src="nasa_curiosity_clean.glb" auto-rotate camera-controls exposure="1.3"></model-viewer>
+      <h2>Curiosity Rover</h2>
+      <ul>
+        <li>Car-sized Mars rover</li>
+        <li>Landed in 2012</li>
+        <li>Found evidence of ancient water</li>
+        <li>Still exploring Mars</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="conclusion">
+    These missions are more than machines — they are humanity’s curiosity given form.
+    Each one extends our reach deeper into the universe.
+  </div>
+</section>
+
+<!-- ===== CLEANUP TO PREVENT CRASH ===== -->
+<script>
+window.addEventListener("beforeunload", () => {
+  document.querySelectorAll("model-viewer").forEach(m=>{
+    m.pause();
+    m.src="";
+  });
+  const v=document.getElementById("bgVideo");
+  if(v){
+    v.pause();
+    v.src="";
+  }
+});
+</script>
+
+</body>
+</html>
