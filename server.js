@@ -14,10 +14,10 @@ require("dotenv").config();
 // =======================
 const express = require("express");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
 
 const Survey = require("./models/Survey");
 const Contact = require("./models/Contact");
-const sendEmail = require("./utils/mailer");
 
 // =======================
 // 🚀 APP INIT
@@ -58,12 +58,38 @@ if (!uri) {
 
 mongoose
   .connect(uri)
-  .then(() => {
-    console.log("✅ MongoDB Connected Successfully");
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-  });
+  .then(() => console.log("✅ MongoDB Connected Successfully"))
+  .catch((err) =>
+    console.error("❌ MongoDB connection error:", err)
+  );
+
+// =======================
+// 📧 EMAIL (RENDER-SAFE SMTP)
+// =======================
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // REQUIRED for Render
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // Gmail App Password
+  },
+});
+
+async function sendEmail(subject, text) {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Cosmic Survey" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject,
+      text,
+    });
+
+    console.log("📧 Email sent:", info.response);
+  } catch (error) {
+    console.error("❌ Email failed:", error.message);
+  }
+}
 
 // =======================
 // 📥 SURVEY SUBMISSION
@@ -73,7 +99,7 @@ app.post("/submit-survey", async (req, res) => {
     const survey = new Survey(req.body);
     await survey.save();
 
-    // 📧 Email (NON-BLOCKING)
+    // 🔔 Email (NON-BLOCKING)
     sendEmail(
       "📊 New Survey Submitted",
       `New survey submitted by: ${req.body.name || "Anonymous"}`
@@ -100,7 +126,7 @@ app.post("/contact", async (req, res) => {
     const contact = new Contact(req.body);
     await contact.save();
 
-    // 📧 Email (NON-BLOCKING)
+    // 🔔 Email (NON-BLOCKING)
     sendEmail(
       "📩 New Contact Message",
       `Name: ${req.body.name}
@@ -115,7 +141,7 @@ ${req.body.message}`
       message: "Contact message saved successfully",
     });
   } catch (error) {
-    console.error("❌ Error saving contact message:", error);
+    console.error("❌ Error saving contact:", error);
     res.status(500).json({
       success: false,
       message: "Failed to save contact message",
@@ -124,7 +150,7 @@ ${req.body.message}`
 });
 
 // =======================
-// 🔐 ADMIN: VIEW SURVEYS (PAGINATED)
+// 🔐 ADMIN: VIEW SURVEYS
 // =======================
 app.get("/admin/surveys", adminAuth, async (req, res) => {
   try {
@@ -157,10 +183,11 @@ app.get("/admin/surveys", adminAuth, async (req, res) => {
 });
 
 // =======================
-// 🚀 START SERVER (LAST)
+// 🚀 START SERVER
 // =======================
 app.listen(3000, () => {
   console.log("🚀 Server running on port 3000");
 });
+
 
 
