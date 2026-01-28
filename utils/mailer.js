@@ -1,26 +1,31 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587, // IMPORTANT
+  secure: false, // MUST be false for 587
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Gmail App Password
+    pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
+  connectionTimeout: 10000, // 10 seconds
 });
 
-// NON-BLOCKING email sender
 async function sendEmail(subject, text) {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"Cosmic Survey" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
       subject,
       text,
     });
 
-    console.log("📧 Email sent:", subject);
-  } catch (err) {
-    console.error("📧 Email failed:", err.message);
+    console.log("📧 Email sent:", info.response);
+  } catch (error) {
+    console.error("❌ Email error:", error.message);
   }
 }
 
