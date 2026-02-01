@@ -1,32 +1,21 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587, // IMPORTANT
-  secure: false, // MUST be false for 587
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 10000, // 10 seconds
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmail(subject, text) {
   try {
-    const info = await transporter.sendMail({
-      from: `"Cosmic Survey" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+    await resend.emails.send({
+      from: "DarkSkySecrets <onboarding@resend.dev>",
+      to: process.env.ADMIN_EMAIL, // ✅ THIS WAS MISSING
       subject,
       text,
     });
 
-    console.log("📧 Email sent:", info.response);
+    console.log("📧 Email sent successfully");
   } catch (error) {
-    console.error("❌ Email error:", error.message);
+    console.error("❌ Email error:", error);
   }
 }
 
 module.exports = sendEmail;
+
