@@ -164,6 +164,24 @@ textarea:focus{
   border-color:var(--accent);
 }
 
+/* ERROR MESSAGE */
+.error-message{
+  color:#ff6b6b;
+  font-size:13px;
+  margin-top:8px;
+  display:none;
+}
+
+.card.error input,
+.card.error textarea,
+.card.error select{
+  border-color:#ff6b6b;
+}
+
+.card.error .error-message{
+  display:block;
+}
+
 /* OPTIONS GRID */
 .options{
   display:grid;
@@ -212,6 +230,13 @@ button.submit:hover{
   transform:scale(1.08);
   box-shadow:0 0 35px var(--glow);
 }
+
+button.submit:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:scale(1);
+}
+
 /* FORM */
 .contact-form input,
 .contact-form textarea {
@@ -372,179 +397,205 @@ button.submit:hover{
 
 <form id="surveyForm">
 
-<div class="card">
-<label class="question">Your Name</label>
-<input type="text" id="username" required>
+<!-- Q1 -->
+<div class="card" data-question="1">
+<label class="question">Your Name *</label>
+<input type="text" id="username" name="username" required>
+<div class="error-message">Please enter your name</div>
 </div>
 
-
-
 <!-- Q2 -->
-<div class="card">
-<label>Your Age</label>
-<input type="number" required>
+<div class="card" data-question="2">
+<label>Your Age *</label>
+<input type="number" id="age" name="age" min="1" max="120" required>
+<div class="error-message">Please enter your age</div>
 </div>
 
 <!-- Q3 -->
-<div class="card">
-<label>What area do you live in?</label>
-<select>
-<option>Rural</option>
-<option>Semi-rural</option>
-<option>Semi-urban</option>
-<option>Urban</option>
+<div class="card" data-question="3">
+<label>What area do you live in? *</label>
+<select id="area" name="area" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Rural">Rural</option>
+<option value="Semi-rural">Semi-rural</option>
+<option value="Semi-urban">Semi-urban</option>
+<option value="Urban">Urban</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q4 -->
-<div class="card">
-<label>How dark is your night sky?</label>
-<select>
-<option>Very bright</option>
-<option>Bright</option>
-<option>Moderately dark</option>
-<option>Dark</option>
-<option>Very dark</option>
+<div class="card" data-question="4">
+<label>How dark is your night sky? *</label>
+<select id="sky_darkness" name="sky_darkness" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Very bright">Very bright</option>
+<option value="Bright">Bright</option>
+<option value="Moderately dark">Moderately dark</option>
+<option value="Dark">Dark</option>
+<option value="Very dark">Very dark</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q5 -->
-<div class="card">
-<label>Can you see the Milky Way band from where you live?</label>
-<select>
-<option>Yes, clearly</option>
-<option>Faintly</option>
-<option>Occasionally</option>
-<option>No, never</option>
-<option>Not sure</option>
+<div class="card" data-question="5">
+<label>Can you see the Milky Way band from where you live? *</label>
+<select id="milky_way" name="milky_way" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Yes, clearly">Yes, clearly</option>
+<option value="Faintly">Faintly</option>
+<option value="Occasionally">Occasionally</option>
+<option value="No, never">No, never</option>
+<option value="Not sure">Not sure</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q6 -->
-<div class="card">
-<label>Which part of space do you find more mysterious?</label>
-<select>
-<option>Dark matter / Dark energy</option>
-<option>Black holes</option>
-<option>Origin of the universe</option>
-<option>Multiverse theory</option>
-<option>Extraterrestrial life</option>
+<div class="card" data-question="6">
+<label>Which part of space do you find more mysterious? *</label>
+<select id="mysterious_space" name="mysterious_space" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Dark matter / Dark energy">Dark matter / Dark energy</option>
+<option value="Black holes">Black holes</option>
+<option value="Origin of the universe">Origin of the universe</option>
+<option value="Multiverse theory">Multiverse theory</option>
+<option value="Extraterrestrial life">Extraterrestrial life</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q7 -->
-<div class="card">
-<label>How likely do you think alien life exists?</label>
-<select>
-<option>1 – Most likely</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5 – Certain</option>
+<div class="card" data-question="7">
+<label>How likely do you think alien life exists? *</label>
+<select id="alien_life" name="alien_life" required>
+<option value="" disabled selected>Select an option</option>
+<option value="1 – Most likely">1 – Most likely</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5 – Certain">5 – Certain</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q8 -->
-<div class="card">
-<label>Celestial events you have seen (multiple)</label>
+<div class="card" data-question="8">
+<label>Celestial events you have seen (select at least one) *</label>
 <div class="options">
-<label><input type="checkbox"> Meteor shower</label>
-<label><input type="checkbox"> Solar eclipse</label>
-<label><input type="checkbox"> Lunar eclipse</label>
-<label><input type="checkbox"> ISS flyover</label>
-<label><input type="checkbox"> None</label>
+<label><input type="checkbox" name="celestial_events" value="Meteor shower"> Meteor shower</label>
+<label><input type="checkbox" name="celestial_events" value="Solar eclipse"> Solar eclipse</label>
+<label><input type="checkbox" name="celestial_events" value="Lunar eclipse"> Lunar eclipse</label>
+<label><input type="checkbox" name="celestial_events" value="ISS flyover"> ISS flyover</label>
+<label><input type="checkbox" name="celestial_events" value="None"> None</label>
 </div>
+<div class="error-message">Please select at least one option</div>
 </div>
 
 <!-- Q9 -->
-<div class="card">
-<label>Do power outages make the sky darker in your area?</label>
-<select>
-<option>Very often</option>
-<option>Sometimes</option>
-<option>Rarely</option>
-<option>Never</option>
-<option>No idea</option>
+<div class="card" data-question="9">
+<label>Do power outages make the sky darker in your area? *</label>
+<select id="power_outages" name="power_outages" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Very often">Very often</option>
+<option value="Sometimes">Sometimes</option>
+<option value="Rarely">Rarely</option>
+<option value="Never">Never</option>
+<option value="No idea">No idea</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q10 -->
-<div class="card">
-<label>Which future mission excites you most?</label>
-<select>
-<option>Artemis</option>
-<option>Mars Sample Return</option>
-<option>Europa Clipper</option>
-<option>Interstellar Probe</option>
-<option>Gaganyaan</option>
+<div class="card" data-question="10">
+<label>Which future mission excites you most? *</label>
+<select id="future_mission" name="future_mission" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Artemis">Artemis</option>
+<option value="Mars Sample Return">Mars Sample Return</option>
+<option value="Europa Clipper">Europa Clipper</option>
+<option value="Interstellar Probe">Interstellar Probe</option>
+<option value="Gaganyaan">Gaganyaan</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q11 -->
-<div class="card">
-<label>Should governments invest more in space exploration?</label>
-<select>
-<option>Yes, much more</option>
-<option>A little more</option>
-<option>Current level is fine</option>
-<option>Less</option>
-<option>Should not invest</option>
+<div class="card" data-question="11">
+<label>Should governments invest more in space exploration? *</label>
+<select id="govt_investment" name="govt_investment" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Yes, much more">Yes, much more</option>
+<option value="A little more">A little more</option>
+<option value="Current level is fine">Current level is fine</option>
+<option value="Less">Less</option>
+<option value="Should not invest">Should not invest</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q12 -->
-<div class="card">
-<label>Why do you think so? (2–3 lines)</label>
-<textarea rows="3"></textarea>
+<div class="card" data-question="12">
+<label>Why do you think so? (2–3 lines) *</label>
+<textarea id="investment_reason" name="investment_reason" rows="3" required></textarea>
+<div class="error-message">Please provide your reasoning</div>
 </div>
 
 <!-- Q13 -->
-<div class="card">
-<label>Biggest benefit of space exploration</label>
-<select>
-<option>Technology & innovation</option>
-<option>Understanding the universe</option>
-<option>Protecting Earth</option>
-<option>Discovering life</option>
-<option>Human survival</option>
-<option>Inspiration</option>
+<div class="card" data-question="13">
+<label>Biggest benefit of space exploration *</label>
+<select id="biggest_benefit" name="biggest_benefit" required>
+<option value="" disabled selected>Select an option</option>
+<option value="Technology & innovation">Technology & innovation</option>
+<option value="Understanding the universe">Understanding the universe</option>
+<option value="Protecting Earth">Protecting Earth</option>
+<option value="Discovering life">Discovering life</option>
+<option value="Human survival">Human survival</option>
+<option value="Inspiration">Inspiration</option>
 </select>
+<div class="error-message">Please select an option</div>
 </div>
 
 <!-- Q14 -->
-<div class="card">
-<label>Which would you support more? (multiple)</label>
+<div class="card" data-question="14">
+<label>Which would you support more? (select at least one) *</label>
 <div class="options">
-<label><input type="checkbox"> Space tourism</label>
-<label><input type="checkbox"> Scientific missions</label>
-<label><input type="checkbox"> Planetary defense</label>
-<label><input type="checkbox"> Interstellar exploration</label>
-<label><input type="checkbox"> All equally</label>
+<label><input type="checkbox" name="support_more" value="Space tourism"> Space tourism</label>
+<label><input type="checkbox" name="support_more" value="Scientific missions"> Scientific missions</label>
+<label><input type="checkbox" name="support_more" value="Planetary defense"> Planetary defense</label>
+<label><input type="checkbox" name="support_more" value="Interstellar exploration"> Interstellar exploration</label>
+<label><input type="checkbox" name="support_more" value="All equally"> All equally</label>
 </div>
+<div class="error-message">Please select at least one option</div>
 </div>
 
 <!-- Q15 -->
-<div class="card">
-<label>Should space exploration be prioritized over Earth issues? Why?</label>
-<textarea rows="3"></textarea>
+<div class="card" data-question="15">
+<label>Should space exploration be prioritized over Earth issues? Why? *</label>
+<textarea id="prioritization" name="prioritization" rows="3" required></textarea>
+<div class="error-message">Please provide your answer</div>
 </div>
 
 <!-- Q16 -->
-<div class="card">
-<label>How do people in your area perceive astronomy?</label>
-<textarea rows="3"></textarea>
+<div class="card" data-question="16">
+<label>How do people in your area perceive astronomy? *</label>
+<textarea id="area_perception" name="area_perception" rows="3" required></textarea>
+<div class="error-message">Please provide your answer</div>
 </div>
 
 <!-- Q17 -->
-<div class="card">
-<label>How does space exploration influence human identity?</label>
-<textarea rows="3"></textarea>
+<div class="card" data-question="17">
+<label>How does space exploration influence human identity? *</label>
+<textarea id="human_identity" name="human_identity" rows="3" required></textarea>
+<div class="error-message">Please provide your answer</div>
 </div>
 
 <!-- Q18 -->
-<div class="card">
-<label>Are people becoming more or less aware of the universe above them? Why?</label>
-<textarea rows="3"></textarea>
+<div class="card" data-question="18">
+<label>Are people becoming more or less aware of the universe above them? Why? *</label>
+<textarea id="awareness_trend" name="awareness_trend" rows="3" required></textarea>
+<div class="error-message">Please provide your answer</div>
 </div>
 
 <button class="submit" type="submit">Submit Survey</button>
@@ -634,33 +685,107 @@ const form = document.getElementById("surveyForm");
 const cert = document.getElementById("certificate");
 const certName = document.getElementById("certName");
 
-form.addEventListener("submit", e=>{
+// Form validation on submit
+form.addEventListener("submit", e => {
   e.preventDefault();
+  
+  // Remove all previous error states
+  document.querySelectorAll('.card.error').forEach(card => {
+    card.classList.remove('error');
+  });
+  
+  let isValid = true;
+  let firstErrorElement = null;
+  
+  // Validate text inputs
+  const textInputs = form.querySelectorAll('input[type="text"], input[type="number"]');
+  textInputs.forEach(input => {
+    if (!input.value.trim()) {
+      const card = input.closest('.card');
+      card.classList.add('error');
+      isValid = false;
+      if (!firstErrorElement) firstErrorElement = card;
+    }
+  });
+  
+  // Validate selects
+  const selects = form.querySelectorAll('select');
+  selects.forEach(select => {
+    if (!select.value || select.value === '') {
+      const card = select.closest('.card');
+      card.classList.add('error');
+      isValid = false;
+      if (!firstErrorElement) firstErrorElement = card;
+    }
+  });
+  
+  // Validate textareas
+  const textareas = form.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
+    if (!textarea.value.trim()) {
+      const card = textarea.closest('.card');
+      card.classList.add('error');
+      isValid = false;
+      if (!firstErrorElement) firstErrorElement = card;
+    }
+  });
+  
+  // Validate celestial events checkboxes
+  const celestialEvents = form.querySelectorAll('input[name="celestial_events"]:checked');
+  if (celestialEvents.length === 0) {
+    const card = document.querySelector('[data-question="8"]');
+    card.classList.add('error');
+    isValid = false;
+    if (!firstErrorElement) firstErrorElement = card;
+  }
+  
+  // Validate support more checkboxes
+  const supportMore = form.querySelectorAll('input[name="support_more"]:checked');
+  if (supportMore.length === 0) {
+    const card = document.querySelector('[data-question="14"]');
+    card.classList.add('error');
+    isValid = false;
+    if (!firstErrorElement) firstErrorElement = card;
+  }
+  
+  if (!isValid) {
+    // Scroll to first error
+    if (firstErrorElement) {
+      firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    alert('Please fill in all required fields before submitting.');
+    return;
+  }
+  
+  // If validation passes, show certificate
   certName.textContent = document.getElementById("username").value;
-  cert.style.display="flex";
+  cert.style.display = "flex";
+  
+  // Here you would normally send data to backend
+  // submitToBackend();
 });
 
-function closeCert(){
-  cert.style.display="none";
+function closeCert() {
+  cert.style.display = "none";
 }
 
-function shareCert(){
-  if(navigator.share){
+function shareCert() {
+  if (navigator.share) {
     navigator.share({
-      title:"Cosmic Survey",
-      text:"I just participated in a cosmic awareness survey 🌌",
-      url:window.location.href
+      title: "Cosmic Survey",
+      text: "I just participated in a cosmic awareness survey 🌌",
+      url: window.location.href
     });
-  }else{
+  } else {
     alert("Sharing not supported on this device");
   }
 }
 
-function downloadCert(){
-  html2canvas(document.getElementById("certBox")).then(canvas=>{
-    const link=document.createElement("a");
-    link.download="Cosmic_Survey_Certificate.png";
-    link.href=canvas.toDataURL();
+function downloadCert() {
+  html2canvas(document.getElementById("certBox")).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "Cosmic_Survey_Certificate.png";
+    link.href = canvas.toDataURL();
     link.click();
   });
 }
