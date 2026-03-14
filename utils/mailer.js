@@ -1,21 +1,34 @@
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend = null;
+
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is missing");
+  }
+
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+
+  return resend;
+}
 
 async function sendEmail(subject, text) {
-  try {
-    await resend.emails.send({
-      from: "DarkSkySecrets <onboarding@resend.dev>",
-      to: process.env.ADMIN_EMAIL, // ✅ THIS WAS MISSING
-      subject,
-      text,
-    });
-
-    console.log("📧 Email sent successfully");
-  } catch (error) {
-    console.error("❌ Email error:", error);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    throw new Error("ADMIN_EMAIL is missing");
   }
+
+  const response = await getResendClient().emails.send({
+    from: process.env.EMAIL_FROM || "DarkSkySecrets <onboarding@resend.dev>",
+    to: adminEmail,
+    subject,
+    text,
+  });
+
+  console.log("Email sent successfully", response);
+  return response;
 }
 
 module.exports = sendEmail;
-
