@@ -301,6 +301,35 @@ app.get("/admin/surveys", adminAuth, async (req, res) => {
   }
 });
 
+app.get("/admin/contacts", adminAuth, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await Contact.countDocuments();
+    const contacts = await Contact.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      success: true,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      data: contacts,
+    });
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch contact messages",
+    });
+  }
+});
+
 app.get("/admin/surveys/:id", adminAuth, async (req, res) => {
   try {
     const survey = await Survey.findById(req.params.id);

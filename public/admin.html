@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin – Survey Responses</title>
-
+  <title>Admin - Responses Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #0b0b0b;
       color: #fff;
       padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     input {
       padding: 8px;
       margin-bottom: 15px;
       width: 300px;
+      max-width: 100%;
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 4px;
     }
 
     table {
@@ -24,10 +30,12 @@
       margin-bottom: 20px;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid #333;
       padding: 10px;
       text-align: left;
+      vertical-align: top;
     }
 
     th {
@@ -47,17 +55,43 @@
       padding: 6px 12px;
       margin-right: 6px;
       cursor: pointer;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 4px;
     }
 
     .pagination span {
       margin-right: 10px;
     }
 
-    /* MODAL */
+    .section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #101010;
+      border: 1px solid #202020;
+      border-radius: 10px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .section-intro {
+      color: #bbb;
+      margin-bottom: 18px;
+    }
+
+    .message-cell {
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-width: 500px;
+    }
+
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       justify-content: center;
       align-items: center;
@@ -85,136 +119,258 @@
   </style>
 </head>
 <body>
+  <h1>Admin Dashboard</h1>
 
-<h1>🔐 Survey Responses (Admin)</h1>
+  <section class="section">
+    <h2>Survey Responses</h2>
+    <p class="section-intro">
+      Review submitted survey entries. Clicking a row opens the full saved response.
+    </p>
 
-<input type="text" id="search" placeholder="Search by name (current page only)..." />
+    <input
+      type="text"
+      id="surveySearch"
+      placeholder="Search survey responses by name (current page only)..."
+    />
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Submitted At</th>
-      <th>Area</th>
-      <th>Awareness Trend</th>
-    </tr>
-  </thead>
-  <tbody id="tableBody"></tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Submitted At</th>
+          <th>Area</th>
+          <th>Awareness Trend</th>
+        </tr>
+      </thead>
+      <tbody id="surveyTableBody"></tbody>
+    </table>
 
-<div class="pagination">
-  <button id="prev">⬅ Prev</button>
-  <span id="pageInfo"></span>
-  <button id="next">Next ➡</button>
-</div>
+    <div class="pagination">
+      <button id="surveyPrev">Prev</button>
+      <span id="surveyPageInfo"></span>
+      <button id="surveyNext">Next</button>
+    </div>
+  </section>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✖</span>
-    <h3>Full Survey Response</h3>
-    <pre id="modalData"></pre>
+  <section class="section">
+    <h2>Contact Messages</h2>
+    <p class="section-intro">
+      See every message submitted from the contact form, including the exact name,
+      email, and message.
+    </p>
+
+    <input
+      type="text"
+      id="contactSearch"
+      placeholder="Search contact messages by name, email, or message (current page only)..."
+    />
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Submitted At</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody id="contactTableBody"></tbody>
+    </table>
+
+    <div class="pagination">
+      <button id="contactPrev">Prev</button>
+      <span id="contactPageInfo"></span>
+      <button id="contactNext">Next</button>
+    </div>
+  </section>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">X</span>
+      <h3 id="modalTitle">Full Response</h3>
+      <pre id="modalData"></pre>
+    </div>
   </div>
-</div>
 
-<script>
-  const LIMIT = 10;
-  let currentPage = 1;
-  let totalPages = 1;
-  let currentData = [];
+  <script>
+    const LIMIT = 10;
+    let surveyPage = 1;
+    let surveyTotalPages = 1;
+    let surveyData = [];
+    let contactPage = 1;
+    let contactTotalPages = 1;
+    let contactData = [];
 
-  const adminPassword = prompt("Enter admin password:");
-  if (!adminPassword) {
-    document.body.innerHTML = "";
-    throw new Error("Unauthorized");
-  }
+    const adminPassword = prompt("Enter admin password:");
+    if (!adminPassword) {
+      document.body.innerHTML = "";
+      throw new Error("Unauthorized");
+    }
 
-  function fetchPage(page = 1) {
-    fetch(`/admin/surveys?page=${page}&limit=${LIMIT}`, {
-      headers: {
-        "x-admin-password": adminPassword
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function handleUnauthorized() {
+      alert("Unauthorized access");
+      document.body.innerHTML = "";
+    }
+
+    function fetchSurveys(page = 1) {
+      fetch(`/admin/surveys?page=${page}&limit=${LIMIT}`, {
+        headers: {
+          "x-admin-password": adminPassword
+        }
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Unauthorized");
+          }
+
+          return res.json();
+        })
+        .then((result) => {
+          surveyData = result.data || [];
+          surveyPage = result.page || 1;
+          surveyTotalPages = result.totalPages || 1;
+          renderSurveys();
+        })
+        .catch(handleUnauthorized);
+    }
+
+    function fetchContacts(page = 1) {
+      fetch(`/admin/contacts?page=${page}&limit=${LIMIT}`, {
+        headers: {
+          "x-admin-password": adminPassword
+        }
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Unauthorized");
+          }
+
+          return res.json();
+        })
+        .then((result) => {
+          contactData = result.data || [];
+          contactPage = result.page || 1;
+          contactTotalPages = result.totalPages || 1;
+          renderContacts();
+        })
+        .catch(handleUnauthorized);
+    }
+
+    function renderSurveys(filteredData = surveyData) {
+      const body = document.getElementById("surveyTableBody");
+      body.innerHTML = "";
+
+      if (!filteredData.length) {
+        body.innerHTML = '<tr><td colspan="4">No survey responses found on this page.</td></tr>';
+      } else {
+        filteredData.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${escapeHtml(item.name)}</td>
+            <td>${new Date(item.createdAt).toLocaleString()}</td>
+            <td>${escapeHtml(item.area || "-")}</td>
+            <td>${escapeHtml(item.awarenessTrend || "-")}</td>
+          `;
+          row.onclick = () => openModal(item, "Full Survey Response");
+          body.appendChild(row);
+        });
       }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-      })
-      .then(result => {
-        currentData = result.data;
-        currentPage = result.page;
-        totalPages = result.totalPages;
-        render();
-      })
-      .catch(() => {
-        alert("Unauthorized access");
-        document.body.innerHTML = "";
-      });
-  }
 
-  function render() {
-    const body = document.getElementById("tableBody");
-    body.innerHTML = "";
+      document.getElementById("surveyPageInfo").textContent =
+        `Page ${surveyPage} of ${surveyTotalPages}`;
+      document.getElementById("surveyPrev").disabled = surveyPage === 1;
+      document.getElementById("surveyNext").disabled = surveyPage === surveyTotalPages;
+    }
 
-    currentData.forEach(item => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${item.name}</td>
-        <td>${new Date(item.createdAt).toLocaleString()}</td>
-        <td>${item.area || "-"}</td>
-        <td>${item.awarenessTrend || "-"}</td>
-      `;
-      row.onclick = () => openModal(item);
-      body.appendChild(row);
+    function renderContacts(filteredData = contactData) {
+      const body = document.getElementById("contactTableBody");
+      body.innerHTML = "";
+
+      if (!filteredData.length) {
+        body.innerHTML = '<tr><td colspan="4">No contact messages found on this page.</td></tr>';
+      } else {
+        filteredData.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.email)}</td>
+            <td>${new Date(item.createdAt).toLocaleString()}</td>
+            <td class="message-cell">${escapeHtml(item.message)}</td>
+          `;
+          row.onclick = () => openModal(item, "Full Contact Message");
+          body.appendChild(row);
+        });
+      }
+
+      document.getElementById("contactPageInfo").textContent =
+        `Page ${contactPage} of ${contactTotalPages}`;
+      document.getElementById("contactPrev").disabled = contactPage === 1;
+      document.getElementById("contactNext").disabled = contactPage === contactTotalPages;
+    }
+
+    document.getElementById("surveyPrev").onclick = () => {
+      if (surveyPage > 1) {
+        fetchSurveys(surveyPage - 1);
+      }
+    };
+
+    document.getElementById("surveyNext").onclick = () => {
+      if (surveyPage < surveyTotalPages) {
+        fetchSurveys(surveyPage + 1);
+      }
+    };
+
+    document.getElementById("contactPrev").onclick = () => {
+      if (contactPage > 1) {
+        fetchContacts(contactPage - 1);
+      }
+    };
+
+    document.getElementById("contactNext").onclick = () => {
+      if (contactPage < contactTotalPages) {
+        fetchContacts(contactPage + 1);
+      }
+    };
+
+    document.getElementById("surveySearch").addEventListener("input", (e) => {
+      const value = e.target.value.toLowerCase();
+      const filtered = surveyData.filter((item) =>
+        (item.name || "").toLowerCase().includes(value)
+      );
+      renderSurveys(filtered);
     });
 
-    document.getElementById("pageInfo").textContent =
-      `Page ${currentPage} of ${totalPages}`;
+    document.getElementById("contactSearch").addEventListener("input", (e) => {
+      const value = e.target.value.toLowerCase();
+      const filtered = contactData.filter((item) =>
+        (item.name || "").toLowerCase().includes(value) ||
+        (item.email || "").toLowerCase().includes(value) ||
+        (item.message || "").toLowerCase().includes(value)
+      );
+      renderContacts(filtered);
+    });
 
-    document.getElementById("prev").disabled = currentPage === 1;
-    document.getElementById("next").disabled = currentPage === totalPages;
-  }
+    function openModal(data, title) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalData").textContent = JSON.stringify(data, null, 2);
+      document.getElementById("modal").style.display = "flex";
+    }
 
-  document.getElementById("prev").onclick = () => {
-    if (currentPage > 1) fetchPage(currentPage - 1);
-  };
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
 
-  document.getElementById("next").onclick = () => {
-    if (currentPage < totalPages) fetchPage(currentPage + 1);
-  };
-
-  document.getElementById("search").addEventListener("input", e => {
-    const value = e.target.value.toLowerCase();
-    const body = document.getElementById("tableBody");
-    body.innerHTML = "";
-
-    currentData
-      .filter(s => s.name.toLowerCase().includes(value))
-      .forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${new Date(item.createdAt).toLocaleString()}</td>
-          <td>${item.area || "-"}</td>
-          <td>${item.awarenessTrend || "-"}</td>
-        `;
-        row.onclick = () => openModal(item);
-        body.appendChild(row);
-      });
-  });
-
-  function openModal(data) {
-    document.getElementById("modalData").textContent =
-      JSON.stringify(data, null, 2);
-    document.getElementById("modal").style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("modal").style.display = "none";
-  }
-
-  // Initial load
-  fetchPage(1);
-</script>
-
+    fetchSurveys(1);
+    fetchContacts(1);
+  </script>
 </body>
 </html>
