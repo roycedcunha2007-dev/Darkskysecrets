@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmic Survey</title>
+<title>Survey — Dark Sky</title>
+<meta name="description" content="Take the Cosmic Awareness Survey — 18 questions on how you experience the night sky and space exploration, for a student-led dark-sky research project.">
+<meta name="theme-color" content="#04050a">
+<link rel="canonical" href="https://darkskysecrets.space/survey.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dark Sky">
+<meta property="og:url" content="https://darkskysecrets.space/survey.html">
+<meta property="og:title" content="Cosmic Awareness Survey — Dark Sky">
+<meta property="og:description" content="18 questions on how you experience the night sky and space exploration. Takes under 5 minutes.">
+<meta property="og:image" content="https://darkskysecrets.space/hanle.jpeg">
+<meta property="og:image:alt" content="The Milky Way over the Hanle observatory in Ladakh, India">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cosmic Awareness Survey — Dark Sky">
+<meta name="twitter:description" content="18 questions on how you experience the night sky and space exploration. Takes under 5 minutes.">
+<meta name="twitter:image" content="https://darkskysecrets.space/hanle.jpeg">
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -285,6 +307,9 @@ button.submit:disabled{
 .social-icons a {
   text-decoration: none;
   transition: 0.3s;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
 }
 
 .social-icons a:hover {
@@ -362,6 +387,159 @@ button.submit:disabled{
 @media(max-width:600px){
   .intro h1{font-size:36px}
 }
+
+/* ═══ GAME LAYER — Mission: Cosmic Survey (added, nothing removed) ═══ */
+.card{position:relative}
+.card .done-star{
+  position:absolute;top:16px;right:20px;color:var(--accent);font-size:20px;
+  opacity:0;transform:scale(.3) rotate(-40deg);
+  transition:.5s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+}
+.card.done .done-star{opacity:1;transform:scale(1) rotate(0);text-shadow:0 0 14px var(--accent)}
+.card.done{box-shadow:0 0 35px rgba(120,160,255,.45);border:1px solid rgba(160,196,255,.35)}
+
+/* floating +XP reward */
+.xp-float{
+  position:absolute;top:10px;right:54px;
+  font-family:'Orbitron';font-size:15px;color:#9cffac;
+  pointer-events:none;text-shadow:0 0 10px rgba(156,255,172,.8);
+  animation:xpFloat 1.1s ease-out forwards;
+}
+@keyframes xpFloat{
+  0%{opacity:0;transform:translateY(8px) scale(.7)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translateY(-46px) scale(1.15)}
+}
+
+/* MISSION BRIEFING OVERLAY */
+#briefing{
+  position:fixed;inset:0;z-index:40;
+  background:rgba(0,0,6,.94);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  transition:opacity .6s ease;
+}
+#briefing.hide{opacity:0;pointer-events:none}
+.brief-box{max-width:660px;width:100%;text-align:center}
+.brief-line{font-family:'Orbitron';letter-spacing:1px;min-height:1.7em;font-size:clamp(14px,2.6vw,20px);color:var(--accent)}
+.brief-line.big{font-size:clamp(24px,5vw,38px);color:#fff;margin:16px 0;text-shadow:0 0 30px var(--glow)}
+.brief-caret{display:inline-block;width:10px;height:1em;background:var(--accent);vertical-align:-2px;animation:caret .8s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.brief-actions{margin-top:38px;display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;opacity:0;transition:.6s}
+.brief-actions.show{opacity:1}
+.brief-accept{
+  padding:17px 44px;border:none;border-radius:40px;
+  font-family:'Orbitron';font-size:16px;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,var(--glow),var(--accent));color:#000;
+  animation:readyGlow 2s ease-in-out infinite;transition:.3s;
+}
+.brief-accept:hover{transform:scale(1.07)}
+.brief-skip{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:13px;text-decoration:underline}
+
+/* MISSION HUD */
+.sv-dock{
+  position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:15;
+  width:min(480px,92vw);padding:12px 18px;
+  background:var(--glass);backdrop-filter:blur(14px);
+  border:1px solid rgba(160,196,255,.28);border-radius:18px;
+  box-shadow:0 0 30px rgba(120,160,255,.3);transition:.45s ease;
+}
+.sv-dock.gone{opacity:0;transform:translateX(-50%) translateY(24px);pointer-events:none}
+.sv-dock.nudge{animation:nudge .5s ease 2}
+@keyframes nudge{
+  0%,100%{transform:translateX(-50%)}
+  25%{transform:translateX(calc(-50% - 7px))}
+  75%{transform:translateX(calc(-50% + 7px))}
+}
+.traj{position:relative;height:30px;margin:2px 8px 10px}
+.traj::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(160,196,255,.35)}
+.traj-stop{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:15px;filter:grayscale(1) opacity(.4);transition:.5s}
+.traj-stop.passed{filter:none;text-shadow:0 0 12px var(--accent)}
+.traj-rocket{
+  position:absolute;top:50%;left:2%;
+  transform:translate(-50%,-50%) rotate(45deg);
+  font-size:19px;z-index:2;
+  transition:left .8s cubic-bezier(.34,1.3,.64,1);
+}
+.traj-rocket .flame{position:absolute;left:-6px;top:16px;font-size:11px;opacity:0}
+.traj-rocket.thrust .flame{animation:flame .8s ease-out}
+@keyframes flame{0%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(.5) translateY(6px)}}
+.hud-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hud-rank{font-family:'Orbitron';font-size:12px;letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud-xp{font-size:11.5px;color:var(--accent);white-space:nowrap}
+.hud-mute{background:none;border:none;cursor:pointer;font-size:15px;opacity:.85}
+.xpbar{height:5px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:8px}
+.xpbar i{
+  display:block;height:100%;width:0;border-radius:4px;
+  background:linear-gradient(90deg,var(--glow),#9cffac);
+  box-shadow:0 0 10px var(--glow);
+  transition:width .6s cubic-bezier(.34,1.3,.64,1);
+}
+
+/* RANK-UP BANNER */
+#rankup{position:fixed;inset:0;z-index:35;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.rank-banner{opacity:0;text-align:center;font-family:'Orbitron'}
+.rank-banner .r1{font-size:clamp(13px,2.4vw,19px);letter-spacing:8px;color:var(--accent)}
+.rank-banner .r2{
+  font-size:clamp(30px,7vw,58px);font-weight:700;color:#fff;margin-top:10px;
+  text-shadow:0 0 30px var(--glow),0 0 90px var(--glow);
+}
+.rank-banner.go{animation:rankGo 2.1s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rankGo{
+  0%{opacity:0;transform:scale(.55)}
+  14%{opacity:1;transform:scale(1.06)}
+  24%{transform:scale(1)}
+  80%{opacity:1}
+  100%{opacity:0;transform:scale(1.05)}
+}
+
+/* particle canvas — above everything, even the certificate */
+#fxCanvas{position:fixed;inset:0;z-index:30;pointer-events:none}
+
+/* submit celebrates when the mission is complete */
+button.submit.ready{animation:readyGlow 1.8s ease-in-out infinite}
+@keyframes readyGlow{
+  0%,100%{box-shadow:0 0 20px var(--glow)}
+  50%{box-shadow:0 0 55px var(--glow),0 0 95px rgba(120,160,255,.55)}
+}
+
+/* certificate stat card — the shareable bit */
+.cert-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:26px}
+.cert-stats>div{background:rgba(255,255,255,.05);border:1px solid rgba(160,196,255,.25);border-radius:14px;padding:12px}
+.cert-stats span{display:block;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.55)}
+.cert-stats b{display:block;margin-top:6px;font-size:14px;color:var(--accent)}
+
+/* cosmic type + personal constellation — unique to every observer */
+.cert-type{margin-top:22px;padding:16px 18px;border:1px dashed rgba(160,196,255,.4);border-radius:16px}
+.cert-type span{display:block;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.55)}
+.cert-type b{display:block;font-family:'Orbitron';font-size:clamp(17px,3.4vw,23px);color:#fff;margin-top:7px;text-shadow:0 0 18px var(--glow)}
+.cert-type i{display:block;margin-top:7px;font-size:13px;font-style:italic;color:var(--accent)}
+#certConst{display:block;margin:20px auto 6px}
+.const-cap{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.5)}
+.cert-callsign{margin-top:16px;font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,.65)}
+
+/* call-sign chip in the briefing */
+.callsign-chip{margin-top:22px;font-family:'Orbitron';font-size:13px;color:var(--accent);letter-spacing:1px;opacity:0;transition:.6s}
+.callsign-chip.show{opacity:1}
+.callsign-chip button{background:none;border:1px solid rgba(160,196,255,.4);color:var(--accent);border-radius:20px;padding:4px 12px;margin-left:10px;cursor:pointer;font-size:12px;transition:.25s}
+.callsign-chip button:hover{background:rgba(160,196,255,.15)}
+
+/* incoming space-fact transmissions */
+.fact-toast{
+  position:fixed;right:18px;bottom:118px;max-width:300px;z-index:16;
+  background:var(--glass);backdrop-filter:blur(12px);
+  border:1px solid rgba(160,196,255,.3);border-radius:14px;
+  padding:12px 16px;font-size:12.5px;line-height:1.5;color:#dce7ff;
+  box-shadow:0 0 24px rgba(120,160,255,.3);
+  opacity:0;transform:translateY(14px);transition:.45s ease;pointer-events:none;
+}
+.fact-toast.show{opacity:1;transform:none}
+.fact-toast b{color:var(--accent);display:block;font-size:10px;letter-spacing:2px;margin-bottom:5px}
+@media(max-width:600px){.fact-toast{right:10px;left:10px;max-width:none;bottom:126px}}
+
+@media(max-width:600px){
+  .sv-dock{bottom:8px;padding:10px 12px}
+  .hud-rank{font-size:10.5px}
+}
 </style>
 </head>
 
@@ -376,7 +554,7 @@ button.submit:disabled{
 <!-- NAVBAR -->
 <div class="navbar">
   <a href="index.html">Home</a>
-  <a href="Expolre.html">Let's Explore</a>
+  <a href="explore.html">Let's Explore</a>
   <a href="missions.html">Missions</a>
   <a href="survey.html">Survey</a>
 </div>
@@ -547,7 +725,7 @@ button.submit:disabled{
 <label>Biggest benefit of space exploration *</label>
 <select id="biggest_benefit" name="biggest_benefit" required>
 <option value="" disabled selected>Select an option</option>
-<option value="Technology & innovation">Technology & innovation</option>
+<option value="Technology & innovation">Technology &amp; innovation</option>
 <option value="Understanding the universe">Understanding the universe</option>
 <option value="Protecting Earth">Protecting Earth</option>
 <option value="Discovering life">Discovering life</option>
@@ -624,27 +802,23 @@ button.submit:disabled{
 
     <!-- SOCIAL ICONS -->
     <div class="social-icons">
-      <a href="tel:8459441374" title="Call">
-        📞
-      </a>
-
       <a href="mailto:royce.dcunha2007@gmail.com" title="Email">
-        ✉️
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
       </a>
 
       <a href="https://www.instagram.com/roycedcunha3?igsh=Mm1oZXkyd2Rydm04"
          target="_blank" title="Instagram">
-        📷
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
       </a>
 
       <a href="https://www.linkedin.com/in/royce-dcunha-6ab002397"
          target="_blank" title="LinkedIn">
-        💼
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
       </a>
 
       <a href="https://github.com/roycedcunha2007-dev"
          target="_blank" title="GitHub">
-        💻
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
       </a>
     </div>
 
@@ -658,6 +832,45 @@ button.submit:disabled{
 
 </div>
 
+<!-- MISSION HUD (added) -->
+<div class="sv-dock" id="svDock" aria-live="polite">
+  <div class="traj" aria-hidden="true">
+    <span class="traj-stop passed" style="left:2%">🌍</span>
+    <span class="traj-stop" style="left:26%">🌕</span>
+    <span class="traj-stop" style="left:50%">🔴</span>
+    <span class="traj-stop" style="left:74%">🪐</span>
+    <span class="traj-stop" style="left:98%">🌌</span>
+    <span class="traj-rocket" id="trajRocket">🚀<span class="flame">🔥</span></span>
+  </div>
+  <div class="hud-row">
+    <span class="hud-rank" id="hudRank">EARTHLING 🌍</span>
+    <span class="hud-xp" id="hudXp">0 / 180 XP</span>
+    <button class="hud-mute" id="hudMute" type="button" title="Toggle sound">🔊</button>
+  </div>
+  <div class="xpbar" aria-hidden="true"><i id="xpFill"></i></div>
+</div>
+
+<!-- RANK-UP BANNER + PARTICLES (added) -->
+<div id="rankup" aria-hidden="true"><div class="rank-banner" id="rankBanner"><div class="r1">RANK UP</div><div class="r2" id="rankName"></div></div></div>
+<canvas id="fxCanvas" aria-hidden="true"></canvas>
+
+<!-- MISSION BRIEFING (added) -->
+<div id="briefing" aria-hidden="true">
+  <div class="brief-box">
+    <p class="brief-line" id="bl1"></p>
+    <p class="brief-line big" id="bl2"></p>
+    <p class="brief-line" id="bl3"></p>
+    <div class="brief-actions" id="briefActions">
+      <button class="brief-accept" id="briefAccept" type="button">🚀 ACCEPT MISSION</button>
+      <button class="brief-skip" id="briefSkip" type="button">skip briefing</button>
+    </div>
+    <p class="callsign-chip" id="callsignChip">
+      CALL-SIGN: <span id="callsignText">—</span>
+      <button type="button" id="callsignReroll" title="Reroll call-sign">↻ reroll</button>
+    </p>
+  </div>
+</div>
+
 <!-- CERTIFICATE -->
 <div id="certificate">
 <div class="cert" id="certBox">
@@ -668,6 +881,24 @@ button.submit:disabled{
 Thank you for contributing to the Cosmic Awareness Survey.
 Your response helps understand how humanity perceives the universe.
 </p>
+
+<div class="cert-stats" aria-label="Your mission stats">
+<div><span>RANK ACHIEVED</span><b id="csRank">COSMIC LEGEND 🌌</b></div>
+<div><span>TOTAL XP</span><b>180 / 180</b></div>
+<div><span>DRAWN TO</span><b id="csMystery">—</b></div>
+<div><span>DREAM MISSION</span><b id="csMission">—</b></div>
+</div>
+
+<div class="cert-type">
+<span>YOUR COSMIC TYPE</span>
+<b id="ctName">—</b>
+<i id="ctDesc"></i>
+</div>
+
+<canvas id="certConst" width="260" height="110" aria-label="Your personal constellation"></canvas>
+<p class="const-cap">YOUR PERSONAL CONSTELLATION · DRAWN FROM YOUR NAME</p>
+<p class="cert-callsign" id="ccMeta"></p>
+
 <p class="quote">
 "The cosmos is within us. We are made of star-stuff." — Carl Sagan
 </p>
@@ -681,99 +912,20 @@ Your response helps understand how humanity perceives the universe.
 </div>
 
 <script>
-const form = document.getElementById("surveyForm");
 const cert = document.getElementById("certificate");
-const certName = document.getElementById("certName");
-
-// Form validation on submit
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  
-  // Remove all previous error states
-  document.querySelectorAll('.card.error').forEach(card => {
-    card.classList.remove('error');
-  });
-  
-  let isValid = true;
-  let firstErrorElement = null;
-  
-  // Validate text inputs
-  const textInputs = form.querySelectorAll('input[type="text"], input[type="number"]');
-  textInputs.forEach(input => {
-    if (!input.value.trim()) {
-      const card = input.closest('.card');
-      card.classList.add('error');
-      isValid = false;
-      if (!firstErrorElement) firstErrorElement = card;
-    }
-  });
-  
-  // Validate selects
-  const selects = form.querySelectorAll('select');
-  selects.forEach(select => {
-    if (!select.value || select.value === '') {
-      const card = select.closest('.card');
-      card.classList.add('error');
-      isValid = false;
-      if (!firstErrorElement) firstErrorElement = card;
-    }
-  });
-  
-  // Validate textareas
-  const textareas = form.querySelectorAll('textarea');
-  textareas.forEach(textarea => {
-    if (!textarea.value.trim()) {
-      const card = textarea.closest('.card');
-      card.classList.add('error');
-      isValid = false;
-      if (!firstErrorElement) firstErrorElement = card;
-    }
-  });
-  
-  // Validate celestial events checkboxes
-  const celestialEvents = form.querySelectorAll('input[name="celestial_events"]:checked');
-  if (celestialEvents.length === 0) {
-    const card = document.querySelector('[data-question="8"]');
-    card.classList.add('error');
-    isValid = false;
-    if (!firstErrorElement) firstErrorElement = card;
-  }
-  
-  // Validate support more checkboxes
-  const supportMore = form.querySelectorAll('input[name="support_more"]:checked');
-  if (supportMore.length === 0) {
-    const card = document.querySelector('[data-question="14"]');
-    card.classList.add('error');
-    isValid = false;
-    if (!firstErrorElement) firstErrorElement = card;
-  }
-  
-  if (!isValid) {
-    // Scroll to first error
-    if (firstErrorElement) {
-      firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    alert('Please fill in all required fields before submitting.');
-    return;
-  }
-  
-  // If validation passes, show certificate
-  certName.textContent = document.getElementById("username").value;
-  cert.style.display = "flex";
-  
-  // Here you would normally send data to backend
-  // submitToBackend();
-});
 
 function closeCert() {
   cert.style.display = "none";
 }
 
 function shareCert() {
+  const rank = document.getElementById("csRank")?.textContent || "COSMIC LEGEND 🌌";
+  const ctype = document.getElementById("ctName")?.textContent;
+  const typeBit = (ctype && ctype !== "—") ? " My cosmic type: " + ctype + "." : "";
   if (navigator.share) {
     navigator.share({
       title: "Cosmic Survey",
-      text: "I just participated in a cosmic awareness survey 🌌",
+      text: "I just completed the Cosmic Survey — rank " + rank + "." + typeBit + " Can you beat it? 🌠",
       url: window.location.href
     });
   } else {
@@ -793,6 +945,430 @@ function downloadCert() {
 
 <script src="survey.js"></script>
 <script src="contact.js"></script>
+
+<!-- GAME LAYER: Mission Cosmic Survey (added, changes nothing about submission) -->
+<script>
+(function () {
+  const form = document.getElementById("surveyForm");
+  if (!form) return;
+  const cards = [...form.querySelectorAll(".card")];
+  const N = cards.length;
+  const XP_PER = 10, XP_MAX = N * XP_PER;
+  const dock = document.getElementById("svDock");
+  const submitBtn = form.querySelector("button.submit");
+  const rocket = document.getElementById("trajRocket");
+  const stops = [...document.querySelectorAll(".traj-stop")];
+
+  // ── star badge per card ──
+  cards.forEach(c => {
+    const s = document.createElement("span");
+    s.className = "done-star";
+    s.textContent = "★";
+    s.setAttribute("aria-hidden", "true");
+    c.appendChild(s);
+  });
+
+  // ── ranks ──
+  const RANKS = [
+    [0,  "EARTHLING 🌍"],
+    [3,  "STARGAZER 🔭"],
+    [6,  "MOONWALKER 🌕"],
+    [9,  "ASTRONAUT 🧑‍🚀"],
+    [12, "VOYAGER 🛰️"],
+    [15, "STARSHIP CAPTAIN 🚀"],
+    [18, "COSMIC LEGEND 🌌"],
+  ];
+  const rankFor = n => { let r = RANKS[0][1]; for (const [t, name] of RANKS) if (n >= t) r = name; return r; };
+
+  // ── sound (WebAudio, no assets) ──
+  let muted = localStorage.getItem("svMute") === "1";
+  const muteBtn = document.getElementById("hudMute");
+  muteBtn.textContent = muted ? "🔇" : "🔊";
+  muteBtn.addEventListener("click", () => {
+    muted = !muted;
+    localStorage.setItem("svMute", muted ? "1" : "0");
+    muteBtn.textContent = muted ? "🔇" : "🔊";
+  });
+  let actx = null;
+  function beep(freq, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = actx.currentTime + (when || 0);
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(gain || 0.05, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(actx.destination);
+      o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = {
+    answer()  { beep(880, 0.12); beep(1320, 0.16, "sine", 0.04, 0.07); },
+    rank()    { [523, 659, 784, 1046].forEach((f, i) => beep(f, 0.2, "triangle", 0.06, i * 0.09)); },
+    complete(){ [523, 659, 784, 1046, 1318].forEach((f, i) => beep(f, 0.55, "sine", 0.045, i * 0.07)); },
+  };
+
+  // ── UNIQUENESS ENGINE — no two observers get the same run ──
+  const pick = arr => arr[Math.random() * arr.length | 0];
+  const ADJ = ["CRIMSON","SILENT","VELVET","RADIANT","WANDERING","MIDNIGHT","SOLAR","LUCID","IRON","GOLDEN","SWIFT","HOLLOW","BRAVE","GLASS","EMBER","COBALT"];
+  const OPS = ["AURORA","NEBULA","PARALLAX","ZENITH","PERIGEE","SUPERNOVA","ECLIPSE","QUASAR","HORIZON","COMET","SINGULARITY","TWILIGHT","METEOR","AFTERGLOW"];
+  const STARS = [
+    ["VEGA","the star our Sun's pole will point to in 12,000 years"],
+    ["BETELGEUSE","a red supergiant that could explode any century now"],
+    ["SIRIUS","the brightest star in our night, just 8.6 light-years away"],
+    ["POLARIS","the anchor the whole northern sky turns around"],
+    ["ANTARES","the scorpion's red heart, 700× wider than the Sun"],
+    ["RIGEL","a blue supergiant 120,000× brighter than the Sun"],
+    ["ALDEBARAN","the orange eye of the bull, watching Orion forever"],
+    ["ALTAIR","a star spinning so fast it is egg-shaped"],
+    ["DENEB","so luminous it shines to us across 2,600 light-years"],
+    ["PROXIMA","our nearest neighbour star — with a planet of its own"],
+    ["ARCTURUS","a wanderer that drifted in from another part of the galaxy"],
+    ["CAPELLA","four stars pretending to be a single point of light"],
+    ["SPICA","two giant stars locked in a four-day dance"],
+    ["FOMALHAUT","the lonely autumn star wearing a ring of dust"],
+    ["MIZAR","the first double star humanity ever split in a telescope"],
+    ["ALGOL","the 'demon star' that winks every three days"],
+  ];
+  const FACTS = [
+    "Saturn is less dense than water — it would float, given a big enough ocean.",
+    "One day on Venus lasts longer than its entire year.",
+    "Some neutron stars spin 600 times every second.",
+    "There are more stars out there than grains of sand on all Earth's beaches.",
+    "Jupiter's Great Red Spot has been storming for at least 350 years.",
+    "Sunlight is 8 minutes old when it reaches you — you always see the Sun late.",
+    "The Moon drifts 3.8 cm farther from Earth every year.",
+    "A teaspoon of neutron star would weigh about a billion tonnes.",
+    "The ISS crosses a football field of sky every tenth of a second.",
+    "Olympus Mons on Mars stands nearly three Everests tall.",
+    "The Milky Way and Andromeda will collide in about 4.5 billion years.",
+    "On a truly dark night your eyes can see 2.5 million light-years — to Andromeda.",
+    "Voyager 1 carries a golden record with the sound of a human heartbeat.",
+    "The Sun holds 99.86% of all the mass in the Solar System.",
+    "55 Cancri e may be a planet made largely of diamond.",
+    "Astronauts return from space up to 5 cm taller.",
+    "It's always night in space — the stars never turn off. Cities do.",
+    "Every atom of gold on Earth was forged in a dying star.",
+  ];
+  const TYPES = {
+    "Dark matter / Dark energy": ["THE UNSEEN SEEKER", "You trust that the most important things are the ones nobody has managed to see yet."],
+    "Black holes": ["THE VOID GAZER", "Drawn to the edges of everything — where light gives up and mystery begins."],
+    "Origin of the universe": ["THE FIRST-LIGHT CHASER", "You don't just want answers. You want the very first one."],
+    "Multiverse theory": ["THE PARALLEL DREAMER", "Somewhere out there another you is filling this exact survey. You both suspect it."],
+    "Extraterrestrial life": ["THE SIGNAL LISTENER", "You check the silence between the stars the way others check their phone."],
+  };
+
+  // session identity — rerollable, remembered for this visit
+  function makeCallsign() {
+    return pick(ADJ) + "-" + pick(STARS)[0] + "-" + (10 + Math.random() * 90 | 0);
+  }
+  let callsign = sessionStorage.getItem("svCallsign") || makeCallsign();
+  let codename = sessionStorage.getItem("svCodename") || ("OPERATION " + pick(ADJ) + " " + pick(OPS));
+  let myStar = JSON.parse(sessionStorage.getItem("svStar") || "null") || pick(STARS);
+  sessionStorage.setItem("svCallsign", callsign);
+  sessionStorage.setItem("svCodename", codename);
+  sessionStorage.setItem("svStar", JSON.stringify(myStar));
+
+  // space-fact transmissions — shuffled, so order differs every visit
+  const factQueue = FACTS.slice().sort(() => Math.random() - 0.5);
+  let factIdx = 0, factTimer = 0;
+  const toast = document.createElement("div");
+  toast.className = "fact-toast";
+  toast.setAttribute("aria-live", "polite");
+  document.body.appendChild(toast);
+  function showFact(text, title) {
+    toast.innerHTML = "<b>" + (title || "★ INCOMING TRANSMISSION") + "</b>" + text;
+    toast.classList.add("show");
+    clearTimeout(factTimer);
+    factTimer = setTimeout(() => toast.classList.remove("show"), 4600);
+  }
+  function nextFact() {
+    showFact(factQueue[factIdx % factQueue.length]);
+    factIdx++;
+  }
+
+  // a tiny seeded RNG so each name draws the same — and only their — constellation
+  function hashStr(s) {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function drawConstellation(name) {
+    const cv = document.getElementById("certConst");
+    if (!cv) return;
+    const g = cv.getContext("2d");
+    const rnd = mulberry32(hashStr((name || callsign).toLowerCase().trim() || "observer"));
+    g.clearRect(0, 0, cv.width, cv.height);
+    const n = 6 + Math.floor(rnd() * 4);            // 6–9 stars
+    const pts2 = [];
+    for (let i = 0; i < n; i++) {
+      pts2.push([14 + (cv.width - 28) * (i / (n - 1)) + (rnd() - 0.5) * 22,
+                 16 + rnd() * (cv.height - 32)]);
+    }
+    g.strokeStyle = "rgba(160,196,255,.6)";
+    g.lineWidth = 1;
+    g.beginPath();
+    pts2.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y));
+    g.stroke();
+    pts2.forEach(([x, y], i) => {
+      const r = i === 0 || rnd() > 0.7 ? 3 : 2;
+      g.fillStyle = "#fff";
+      g.shadowColor = "#a0c4ff"; g.shadowBlur = 8;
+      g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    });
+    g.shadowBlur = 0;
+  }
+
+  // ── particle engine ──
+  const fx = document.getElementById("fxCanvas");
+  const fctx = fx.getContext("2d");
+  const COLORS = ["#a0c4ff", "#ffffff", "#9cffac", "#ffd27a"];
+  let parts = [], fxOn = false;
+  function sizeFx() { fx.width = innerWidth; fx.height = innerHeight; }
+  sizeFx();
+  addEventListener("resize", sizeFx);
+  function burst(x, y, count, spread) {
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2, v = (Math.random() * 0.6 + 0.4) * (spread || 3);
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1, life: 1,
+        decay: 0.016 + Math.random() * 0.02, size: Math.random() * 2.5 + 1,
+        c: COLORS[Math.random() * COLORS.length | 0], trail: false });
+    }
+    runFx();
+  }
+  function starfall() {
+    for (let i = 0; i < 90; i++) {
+      parts.push({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * 0.5,
+        vx: -1 - Math.random() * 1.5, vy: 4 + Math.random() * 5, life: 1,
+        decay: 0.004 + Math.random() * 0.004, size: Math.random() * 2 + 1,
+        c: COLORS[Math.random() * COLORS.length | 0], trail: true });
+    }
+    runFx();
+  }
+  function runFx() {
+    if (fxOn) return;
+    fxOn = true;
+    (function tick() {
+      fctx.clearRect(0, 0, fx.width, fx.height);
+      parts = parts.filter(p => p.life > 0);
+      for (const p of parts) {
+        p.x += p.vx; p.y += p.vy; p.vy += p.trail ? 0 : 0.08; p.life -= p.decay;
+        fctx.globalAlpha = Math.max(0, p.life);
+        fctx.strokeStyle = fctx.fillStyle = p.c;
+        if (p.trail) {
+          fctx.lineWidth = p.size * 0.8;
+          fctx.beginPath();
+          fctx.moveTo(p.x, p.y);
+          fctx.lineTo(p.x - p.vx * 5, p.y - p.vy * 5);
+          fctx.stroke();
+        } else {
+          fctx.beginPath();
+          fctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          fctx.fill();
+        }
+      }
+      fctx.globalAlpha = 1;
+      if (parts.length) requestAnimationFrame(tick);
+      else { fxOn = false; fctx.clearRect(0, 0, fx.width, fx.height); }
+    })();
+  }
+
+  // ── answered detection ──
+  function answered(card) {
+    const sel = card.querySelector("select");
+    if (sel) return !!sel.value;
+    const boxes = card.querySelectorAll('input[type="checkbox"]');
+    if (boxes.length) return [...boxes].some(b => b.checked);
+    const field = card.querySelector("input, textarea");
+    return !!(field && field.value.trim());
+  }
+
+  // ── HUD refresh ──
+  const wasDone = new Array(N).fill(false);
+  let lastN = -1, lastRank = rankFor(0), rocketTimer = 0;
+
+  function rewardCard(card) {
+    const xp = document.createElement("span");
+    xp.className = "xp-float";
+    xp.textContent = "+10 XP";
+    card.appendChild(xp);
+    xp.addEventListener("animationend", () => xp.remove());
+    const r = card.getBoundingClientRect();
+    burst(r.right - 40, r.top + 26, 14, 2.6);
+    sfx.answer();
+    // first answer introduces your star; after that, shuffled fact transmissions
+    if (factIdx === 0) {
+      showFact("Tonight you observe under ★ " + myStar[0] + " — " + myStar[1] + ".", "★ YOUR STAR TONIGHT");
+      factIdx++;
+    } else {
+      nextFact();
+    }
+  }
+
+  function rankUp(name) {
+    document.getElementById("rankName").textContent = name;
+    const b = document.getElementById("rankBanner");
+    b.classList.remove("go");
+    void b.offsetWidth;
+    b.classList.add("go");
+    burst(innerWidth / 2, innerHeight / 2, 60, 5);
+    sfx.rank();
+  }
+
+  function refresh() {
+    let n = 0;
+    cards.forEach((card, i) => {
+      const d = answered(card);
+      card.classList.toggle("done", d);
+      if (d && !wasDone[i]) rewardCard(card);
+      wasDone[i] = d;
+      if (d) n++;
+    });
+    if (n === lastN) return;
+    lastN = n;
+
+    // rocket flies Earth → deep space
+    const pct = 2 + 96 * (n / N);
+    rocket.style.left = pct + "%";
+    rocket.classList.add("thrust");
+    clearTimeout(rocketTimer);
+    rocketTimer = setTimeout(() => rocket.classList.remove("thrust"), 800);
+    stops.forEach(s => s.classList.toggle("passed", parseFloat(s.style.left) <= pct));
+
+    // xp
+    document.getElementById("xpFill").style.width = (n / N * 100) + "%";
+    document.getElementById("hudXp").textContent = (n * XP_PER) + " / " + XP_MAX + " XP";
+
+    // rank
+    const r = rankFor(n);
+    document.getElementById("hudRank").textContent = r;
+    if (r !== lastRank) { lastRank = r; if (n > 0) rankUp(r); }
+
+    // mission complete
+    submitBtn.classList.toggle("ready", n === N);
+    if (n === N) { starfall(); sfx.complete(); }
+  }
+
+  form.addEventListener("input", refresh);
+  form.addEventListener("change", refresh);
+  refresh();
+
+  // ── certificate stats + finale (fires when survey.js shows the cert) ──
+  const certEl = document.getElementById("certificate");
+  new MutationObserver(() => {
+    if (certEl.style.display === "flex") {
+      document.getElementById("csRank").textContent = lastRank;
+      document.getElementById("csMystery").textContent =
+        document.getElementById("mysterious_space").value || "—";
+      document.getElementById("csMission").textContent =
+        document.getElementById("future_mission").value || "—";
+      // cosmic type — derived from their own answers
+      const mys = document.getElementById("mysterious_space").value;
+      const alien = document.getElementById("alien_life").value || "";
+      const ctype = TYPES[mys] || ["THE SKY WATCHER", "You look up more than most. The sky has noticed."];
+      document.getElementById("ctName").textContent = ctype[0];
+      document.getElementById("ctDesc").textContent =
+        ctype[1] + ((alien.includes("Certain") || alien.includes("Most likely")) ? " And you'd bet on company out there." : "");
+      document.getElementById("ccMeta").textContent =
+        "CALL-SIGN " + callsign + " · " + codename + " · UNDER THE LIGHT OF ★ " + myStar[0];
+      drawConstellation(document.getElementById("username").value);
+      starfall();
+      sfx.complete();
+    }
+  }).observe(certEl, { attributes: true, attributeFilter: ["style"] });
+
+  // ── mission briefing ──
+  const briefing = document.getElementById("briefing");
+  function typeLine(elId, text, speed) {
+    return new Promise(done => {
+      const el2 = document.getElementById(elId);
+      const caret = document.createElement("span");
+      caret.className = "brief-caret";
+      el2.appendChild(caret);
+      let i = 0;
+      (function step() {
+        if (i < text.length) {
+          el2.insertBefore(document.createTextNode(text[i++]), caret);
+          setTimeout(step, speed || 34);
+        } else { caret.remove(); done(); }
+      })();
+    });
+  }
+  function closeBriefing() {
+    briefing.classList.add("hide");
+    sessionStorage.setItem("svBriefed", "1");
+    setTimeout(() => briefing.remove(), 700);
+  }
+  document.getElementById("briefAccept").addEventListener("click", () => {
+    closeBriefing();
+    burst(innerWidth / 2, innerHeight * 0.4, 40, 4);
+    sfx.rank();
+  });
+  document.getElementById("briefSkip").addEventListener("click", closeBriefing);
+  if (sessionStorage.getItem("svBriefed")) {
+    briefing.remove();
+  } else {
+    // call-sign chip: unique per visit, rerollable
+    document.getElementById("callsignText").textContent = callsign;
+    document.getElementById("callsignReroll").addEventListener("click", () => {
+      callsign = makeCallsign();
+      sessionStorage.setItem("svCallsign", callsign);
+      document.getElementById("callsignText").textContent = callsign;
+      sfx.answer();
+    });
+    const OPENERS = [
+      "THE NIGHT SKY NEEDS YOU.",
+      "THE STARS FILED A REQUEST: YOU.",
+      "DARKNESS HAS QUESTIONS. YOU HAVE ANSWERS.",
+      "18 LIGHTS ARE WAITING TO BE SWITCHED ON.",
+    ];
+    (async () => {
+      await typeLine("bl1", "INCOMING TRANSMISSION · " + codename, 32);
+      await typeLine("bl2", pick(OPENERS), 46);
+      await typeLine("bl3", "18 QUESTIONS · REWARD: A COSMIC RANK + CERTIFICATE · YOUR STAR: ★ " + myStar[0], 20);
+      document.getElementById("briefActions").classList.add("show");
+      document.getElementById("callsignChip").classList.add("show");
+    })();
+  }
+
+  // ── idle nudge ──
+  let idleT;
+  function armIdle() {
+    clearTimeout(idleT);
+    idleT = setTimeout(() => {
+      if (lastN > 0 && lastN < N) {
+        dock.classList.remove("nudge");
+        void dock.offsetWidth;
+        dock.classList.add("nudge");
+        const rankEl = document.getElementById("hudRank");
+        const keep = rankEl.textContent;
+        rankEl.textContent = "👀 THE STARS ARE WAITING…";
+        setTimeout(() => { rankEl.textContent = lastRank; }, 2600);
+      }
+      armIdle();
+    }, 30000);
+  }
+  ["input", "change", "scroll", "pointerdown"].forEach(ev =>
+    addEventListener(ev, armIdle, { passive: true }));
+  armIdle();
+
+  // hide the HUD when the form is off-screen
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(entries => {
+      entries.forEach(e => dock.classList.toggle("gone", !e.isIntersecting));
+    }, { rootMargin: "150px 0px 150px 0px" }).observe(form);
+  }
+})();
+</script>
 
 </body>
 </html>

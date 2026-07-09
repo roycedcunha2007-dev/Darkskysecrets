@@ -2,230 +2,292 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dark Sky</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Sky — The night sky is still there</title>
+  <meta name="description" content="An interactive journey through light pollution — how artificial light erased the stars, and how we get them back. By Royce Dcunha.">
+  <meta name="theme-color" content="#04050a">
+  <link rel="canonical" href="https://darkskysecrets.space/">
 
-  <!-- EXISTING STYLES -->
-  <link rel="stylesheet" href="styles.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dark Sky">
+  <meta property="og:url" content="https://darkskysecrets.space/">
+  <meta property="og:title" content="Dark Sky — The night sky is still there">
+  <meta property="og:description" content="Scroll from a city sky drowning in light to a full Milky Way. An interactive project on light pollution.">
+  <meta property="og:image" content="https://darkskysecrets.space/hanle.jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:alt" content="The Milky Way over the Hanle observatory in Ladakh, India">
 
-  <!-- MOBILE FIXES (ADDED, NOTHING REMOVED) -->
-  <style>
-    @media (max-width: 768px) {
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dark Sky — The night sky is still there">
+  <meta name="twitter:description" content="Scroll from a city sky drowning in light to a full Milky Way. An interactive project on light pollution.">
+  <meta name="twitter:image" content="https://darkskysecrets.space/hanle.jpeg">
 
-      body {
-        overflow-x: hidden;
-      }
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
 
-      /* NAVBAR */
-      .navbar {
-        flex-direction: column;
-        gap: 12px;
-        padding: 14px 20px;
-      }
+  <script>document.documentElement.classList.add('js');</script>
 
-      .navbar nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 14px;
-      }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-      /* HERO */
-      .hero h1 {
-        font-size: 1.9rem;
-        line-height: 1.3;
-        text-align: center;
-      }
-
-      .hero-sub {
-        font-size: 1rem;
-        text-align: center;
-      }
-
-      .profile {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      /* INFO PANELS */
-      .info-panel {
-        margin: 20px;
-        padding: 20px;
-        font-size: 0.95rem;
-      }
-
-      /* COMPARE SECTIONS */
-      .compare {
-        flex-direction: column;
-        gap: 30px;
-      }
-
-      .compare-images {
-        flex-direction: column;
-        gap: 18px;
-      }
-
-      .compare-images img {
-        width: 100%;
-        height: auto;
-      }
-
-      /* POLLUTION MAP */
-      .pollution-map img {
-        width: 100%;
-        height: auto;
-      }
-
-      .map-overlay {
-        padding: 20px;
-        text-align: center;
-      }
-
-      /* SOLUTIONS GRID */
-      .solution-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 0 20px;
-      }
-
-      .card {
-        font-size: 0.95rem;
-        padding: 16px;
-      }
-
-      footer {
-        font-size: 0.85rem;
-        padding: 12px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="home.css">
 </head>
-
 <body>
 
-<!-- BACKGROUND -->
-<div class="bg">
-  <video autoplay muted loop playsinline>
-    <source src="black hole.mp4" type="video/mp4">
-  </video>
-  <div class="overlay"></div>
-</div>
+<!-- SITE-WIDE AMBIENT SKY -->
+<canvas id="ambientCanvas" class="ambient" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="hud mono" aria-hidden="true"><span class="hud-square"></span><span id="hudText">00 · TURN OFF THE CITY</span></div>
 
 <!-- NAVBAR -->
 <header class="navbar">
-  <div class="logo">Dark Sky</div>
-  <nav>
-    <a href="index.html" class="active">Home</a>
-    <a href="Expolre.html">Let’s Explore</a>
+  <a class="logo" href="index.html">DARK&nbsp;SKY</a>
+  <nav aria-label="Primary">
+    <a href="index.html" class="active" aria-current="page">Home</a>
+    <a href="explore.html">Let&rsquo;s Explore</a>
     <a href="missions.html">Missions</a>
     <a href="survey.html">Survey</a>
   </nav>
+  <div class="nav-progress" aria-hidden="true"></div>
 </header>
 
 <main>
 
-<section class="hero reveal">
-  <h1>The night sky is still there.<br>We just can’t see it anymore.</h1>
+<!-- ═══ ACT I · SCROLL-CINEMA HERO ═══ -->
+<section class="hero" id="hero" data-hud="00 · TURN OFF THE CITY" aria-label="The night sky returning as city light fades">
+  <div class="hero-stage">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <p class="hero-tag mono" aria-hidden="true">LIVE SKY SIMULATION · BORTLE 9 → 1 · 19.0760° N, 72.8777° E</p>
 
-  <p class="hero-sub">
-    I’m <strong>Royce Dcunha</strong>, a student and space enthusiast.
-    This project explores how artificial light is erasing our view of the universe.
-  </p>
+    <div class="hero-copy">
+      <h1 class="hero-title">
+        <span class="line-mask"><span class="line" id="heroLine1">The night sky is still there.</span></span>
+        <span class="line-mask"><span class="line" id="heroLine2">We just can&rsquo;t see it anymore.</span></span>
+      </h1>
 
-  <div class="profile">
-    <img src="prof.jpeg" alt="Royce Dcunha">
-    <span>Royce Dcunha</span>
-  </div>
+      <p class="hero-counter mono" id="heroCounter" aria-live="off">
+        <span class="counter-value" id="starCount">≈ 25</span>
+        <span class="counter-label">stars visible to the naked eye</span>
+      </p>
 
-  <span class="scroll">Scroll ↓</span>
-</section>
+      <div class="hero-outro" id="heroOutro">
+        <p class="hero-sub">
+          I&rsquo;m <strong>Royce Dcunha</strong> — a student and space enthusiast.
+          This project is about how artificial light is erasing our view of the
+          universe, and what it takes to get the stars back.
+        </p>
+        <div class="profile">
+          <img src="prof.jpeg" alt="Royce Dcunha" width="48" height="48">
+          <span class="mono">ROYCE DCUNHA · MUMBAI, IN</span>
+        </div>
+      </div>
+    </div>
 
-<section class="info-panel reveal">
-  <p>
-    Light pollution affects sleep cycles, wildlife behavior, energy consumption,
-    and disconnects humanity from the cosmos that once guided civilizations.
-  </p>
-</section>
-
-<section class="compare reveal">
-  <div class="compare-text info-panel small">
-    <h2>Same planet.<br>Different skies.</h2>
-    <p>City lights overpower stars. Darkness reveals the Milky Way.</p>
-  </div>
-
-  <div class="compare-images">
-    <figure>
-      <img src="light pollution 8.jpeg">
-      <figcaption>High light pollution</figcaption>
-    </figure>
-    <figure>
-      <img src="light pollution 1.jpeg">
-      <figcaption>Zero light pollution</figcaption>
-    </figure>
+    <div class="scroll-hint mono" id="scrollHint" aria-hidden="true">
+      <span>SCROLL — TURN OFF THE CITY</span>
+      <span class="hint-line"></span>
+    </div>
   </div>
 </section>
 
-<section class="compare reveal">
-  <div class="compare-text info-panel small">
-    <h2>India at night</h2>
-    <p>Satellite imagery exposes how brightness spreads across cities.</p>
-  </div>
+<!-- ═══ MANIFESTO ═══ -->
+<section class="manifesto" data-hud="01 · WHY IT MATTERS" aria-labelledby="manifestoHead">
+  <span class="ghost-num" aria-hidden="true">01</span>
+  <p class="section-index mono">01 / WHY IT MATTERS</p>
+  <h2 id="manifestoHead" class="manifesto-title">
+    <span class="line-mask"><span class="line reveal-line">83% of humanity lives</span></span>
+    <span class="line-mask"><span class="line reveal-line">under a light-polluted sky.</span></span>
+    <span class="line-mask"><span class="line reveal-line accent">One in three of us can no</span></span>
+    <span class="line-mask"><span class="line reveal-line accent">longer see the Milky Way.</span></span>
+  </h2>
 
-  <div class="compare-images">
-    <figure>
-      <img src="night view.jpeg">
-      <figcaption>Satellite view</figcaption>
+  <ul class="impact-list">
+    <li class="impact reveal-item">
+      <span class="mono impact-idx">A</span>
+      <h3>Sleep</h3>
+      <p>Artificial light at night suppresses melatonin and disrupts the circadian rhythm every living thing runs on.</p>
+    </li>
+    <li class="impact reveal-item">
+      <span class="mono impact-idx">B</span>
+      <h3>Wildlife</h3>
+      <p>Migrating birds and hatchling sea turtles navigate by starlight and moonlight — skyglow sends them the wrong way.</p>
+    </li>
+    <li class="impact reveal-item">
+      <span class="mono impact-idx">C</span>
+      <h3>Energy</h3>
+      <p>Light radiated into the sky does nothing for anyone. It is pure waste — billions of dollars of it, every year.</p>
+    </li>
+    <li class="impact reveal-item">
+      <span class="mono impact-idx">D</span>
+      <h3>The cosmos</h3>
+      <p>Every civilisation before ours navigated, farmed and dreamed by the night sky. We are the first to lose it.</p>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══ SCROLL-WIPE COMPARISON ═══ -->
+<section class="wipe" id="wipe" data-hud="02 · SAME PLANET, DIFFERENT SKIES" aria-label="The same landscape with a polluted sky wiping away to reveal a dark sky">
+  <div class="wipe-stage">
+    <figure class="wipe-frame">
+      <img class="wipe-img base" src="light pollution 1.jpeg" alt="A landscape under a pristine, star-filled dark sky with the Milky Way visible">
+      <div class="wipe-polluted" id="wipePolluted" aria-hidden="true">
+        <img class="wipe-img" src="light pollution 8.jpeg" alt="">
+      </div>
+      <div class="wipe-seam" id="wipeSeam" aria-hidden="true"></div>
     </figure>
-    <figure>
-      <img src="light pollution map.jpeg">
-      <figcaption>Pollution heatmap</figcaption>
+
+    <p class="section-index mono wipe-index">02 / SAME PLANET, DIFFERENT SKIES</p>
+    <div class="wipe-labels mono" aria-hidden="true">
+      <span class="wipe-label" id="wipeLabelDark">BORTLE 1 · THE SKY AS IT IS</span>
+      <span class="wipe-label" id="wipeLabelCity">BORTLE 9 · THE SKY WE BUILT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INDIA AT NIGHT ═══ -->
+<section class="satellite" data-hud="03 · SEEN FROM ORBIT" aria-labelledby="satHead">
+  <div class="sat-inner">
+    <div class="satellite-copy">
+      <p class="section-index mono">03 / SEEN FROM ORBIT</p>
+      <h2 id="satHead">India,<br>switched&nbsp;on</h2>
+      <p class="sat-lede">From orbit, light pollution isn&rsquo;t abstract. Every bright
+         pixel is sky that someone underneath it has lost.</p>
+      <p class="mono sat-coord">NASA VIIRS NIGHT COMPOSITE · 20.6&deg; N, 78.9&deg; E</p>
+    </div>
+
+    <figure class="sat-plate">
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <img id="satImg" src="night view.jpeg" alt="Satellite view of India at night, cities glowing across the subcontinent" loading="lazy">
+      <span class="sat-marker" style="--mx:47%; --my:33%"><span class="dot"></span><span class="mono">DELHI</span></span>
+      <span class="sat-marker" style="--mx:28%; --my:60%"><span class="dot"></span><span class="mono">MUMBAI</span></span>
+      <span class="sat-marker flip" style="--mx:91%; --my:49%"><span class="dot"></span><span class="mono">KOLKATA</span></span>
+      <span class="sat-marker" style="--mx:48%; --my:78%"><span class="dot"></span><span class="mono">BENGALURU</span></span>
     </figure>
   </div>
 </section>
 
-<section class="pollution-map reveal">
-  <img src="levels.jpeg">
-  <div class="map-overlay">
-    <h2>Light Pollution Levels</h2>
-    <p>Brighter regions mark where the night sky has disappeared.</p>
+<!-- ═══ BORTLE SCRUBBER ═══ -->
+<section class="bortle" data-hud="04 · THE BORTLE SCALE" aria-labelledby="bortleHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">04</span>
+    <p class="section-index mono">04 / THE BORTLE SCALE</p>
+    <h2 id="bortleHead">Drag toward darkness</h2>
+    <p class="lede">Astronomers grade night skies from class 9 — inner city — to class 1,
+       the darkest places left on Earth. Drag the scale and watch the sky respond.</p>
+  </header>
+
+  <div class="bortle-viewport">
+    <canvas id="bortleCanvas" aria-hidden="true"></canvas>
+    <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+    <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+    <p class="frame-badge mono" aria-hidden="true"><span class="pulse"></span>SKY SIMULATION · LIVE</p>
+    <div class="bortle-readout">
+      <span class="bortle-class mono" id="bortleClass">9</span>
+      <div class="bortle-meta">
+        <h3 id="bortleName">Inner-city sky</h3>
+        <p class="mono" id="bortleStats">LIMITING MAG 4.0 · ≈ 25 STARS</p>
+        <p id="bortleDesc">Only the Moon, the planets and a few dozen stars survive the glow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bortle-rail">
+    <span class="mono rail-end">9 · CITY</span>
+    <input type="range" id="bortleRange" min="1" max="9" step="1" value="1"
+           aria-label="Bortle scale — slide right for darker skies">
+    <span class="mono rail-end">1 · DARK</span>
   </div>
 </section>
 
-<section class="compare reveal">
-  <div class="compare-text info-panel small">
-    <h2>Mumbai vs Hanle</h2>
-    <p>Urban glow hides stars. High-altitude darkness reveals the universe.</p>
+<!-- ═══ MUMBAI VS HANLE SLIDER ═══ -->
+<section class="versus" data-hud="05 · TWO INDIAN SKIES" aria-labelledby="versusHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">05</span>
+    <p class="section-index mono">05 / TWO INDIAN SKIES</p>
+    <h2 id="versusHead">Mumbai <span class="dim">vs</span> Hanle</h2>
+    <p class="lede">Two skies, one country, 2,000 kilometres apart. Drag the seam
+       between a megacity&rsquo;s glow and India&rsquo;s darkest sky.</p>
+  </header>
+
+  <div class="versus-stage" id="versusStage">
+    <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+    <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+    <img class="versus-img" src="hanle.jpeg" alt="The night sky above Hanle, Ladakh — thick with stars" loading="lazy">
+    <div class="versus-top" id="versusTop">
+      <img class="versus-img" src="mumbai.jpeg" alt="Mumbai's skyline glowing under an orange, starless night sky" loading="lazy">
+    </div>
+    <div class="versus-handle" id="versusHandle" role="slider" tabindex="0"
+         aria-label="Comparison slider between Mumbai and Hanle skies"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <span class="handle-line"></span><span class="handle-grip mono">◂ ▸</span>
+    </div>
   </div>
 
-  <div class="compare-images">
-    <figure>
-      <img src="mumbai.jpeg">
-      <figcaption>Mumbai</figcaption>
-    </figure>
-    <figure>
-      <img src="hanle.jpeg">
-      <figcaption>Hanle, Ladakh</figcaption>
-    </figure>
+  <div class="versus-captions">
+    <div class="versus-cap mono" id="capMumbai">
+      <strong>MUMBAI</strong><span>BORTLE 9 · ≈ 25 STARS · 20M PEOPLE UNDER GLOW</span>
+      <span class="cap-coord">19.0760° N · 72.8777° E · ALT 14 M</span>
+    </div>
+    <div class="versus-cap right mono" id="capHanle">
+      <strong>HANLE, LADAKH</strong><span>BORTLE 1–2 · ≈ 4,000 STARS · INDIA&rsquo;S FIRST DARK-SKY RESERVE</span>
+      <span class="cap-coord">32.7790° N · 78.9640° E · ALT 4,500 M</span>
+    </div>
   </div>
 </section>
 
-<section class="solutions reveal">
-  <h2>How We Can Reduce Light Pollution</h2>
+<!-- ═══ SOLUTIONS · TURN THE LIGHTS OFF ═══ -->
+<section class="solutions" id="solutions" data-hud="06 · GETTING THE SKY BACK" aria-labelledby="solHead">
+  <div class="solutions-sky" id="solutionsSky" aria-hidden="true"></div>
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">06</span>
+    <p class="section-index mono">06 / GETTING THE SKY BACK</p>
+    <h2 id="solHead">Turn the lights off</h2>
+    <p class="lede">Light pollution is the only pollution that vanishes at the speed of light.
+       Tap each fix — and watch the sky above this page respond.</p>
+  </header>
 
-  <div class="solution-grid">
-    <div class="card">Use shielded lighting</div>
-    <div class="card">Switch to warm LEDs</div>
-    <div class="card">Install motion sensors</div>
-    <div class="card">Turn off unnecessary lights</div>
-    <div class="card">Create dark sky reserves</div>
-    <div class="card">Spread public awareness</div>
-  </div>
+  <ol class="sol-list">
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">01</span>
+      <span class="sol-body"><strong>Shield every light</strong><em>Full cut-off fixtures aim light at the street — not the sky.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">02</span>
+      <span class="sol-body"><strong>Go warm, not white</strong><em>LEDs under 3000&nbsp;K scatter far less into the atmosphere.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">03</span>
+      <span class="sol-body"><strong>Install motion sensors</strong><em>Light that switches itself off when nobody needs it.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">04</span>
+      <span class="sol-body"><strong>Switch off the extra</strong><em>Empty offices, façades and billboards after midnight.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">05</span>
+      <span class="sol-body"><strong>Protect dark-sky reserves</strong><em>Keep the last naturally dark places — like Hanle — dark.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+    <li><button class="sol-row reveal-item" type="button">
+      <span class="mono sol-idx">06</span>
+      <span class="sol-body"><strong>Talk about it</strong><em>Most light pollution persists because nobody questions it.</em></span>
+      <span class="sol-lamp" aria-hidden="true"></span></button></li>
+  </ol>
+  <p class="sol-score mono" id="solScore" aria-live="polite">0 / 6 LIGHTS OFF</p>
 </section>
 
 </main>
 
-<footer>© Royce Dcunha</footer>
+<footer class="footer">
+  <p class="mono footer-eyebrow">FIN · SEE YOU IN THE DARK</p>
+  <p class="footer-sign mono">A PROJECT BY ROYCE DCUNHA · MADE UNDER A BORTLE 9 SKY · MUMBAI, INDIA · © 2026</p>
+</footer>
 
-<script src="script.js"></script>
+<script src="home.js"></script>
 </body>
 </html>

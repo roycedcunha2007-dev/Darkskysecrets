@@ -1,312 +1,306 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Missions Gallery – Dark Sky</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missions — Dark Sky</title>
+  <meta name="description" content="Mission Control — live telemetry, real 3D models of humanity's spacecraft, and the story of how we learned to leave home. Part of the Dark Sky project.">
+  <meta name="theme-color" content="#04050a">
+  <link rel="canonical" href="https://darkskysecrets.space/missions.html">
 
-<!-- MODEL VIEWER -->
-<script type="module"
-  src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-</script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dark Sky">
+  <meta property="og:url" content="https://darkskysecrets.space/missions.html">
+  <meta property="og:title" content="Missions — Dark Sky">
+  <meta property="og:description" content="Mission Control — live telemetry, real 3D models of humanity's spacecraft, and the story of how we learned to leave home.">
+  <meta property="og:image" content="https://darkskysecrets.space/sky_orbit.jpg">
+  <meta property="og:image:alt" content="Earth seen whole from space, the Blue Marble">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Missions — Dark Sky">
+  <meta name="twitter:description" content="Mission Control — live telemetry, real 3D models of humanity's spacecraft, and the story of how we learned to leave home.">
+  <meta name="twitter:image" content="https://darkskysecrets.space/sky_orbit.jpg">
 
-body{
-  font-family:'Orbitron',sans-serif;
-  background:#000;
-  color:#fff;
-  overflow-x:hidden;
-}
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
 
-/* ================= NAVBAR ================= */
-.navbar{
-  position:fixed;
-  top:0;
-  width:100%;
-  height:64px;
-  padding:0 6%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,.65);
-  backdrop-filter:blur(14px);
-  z-index:10;
-}
-.navbar nav a{
-  margin-left:22px;
-  color:#bbb;
-  text-decoration:none;
-  font-size:14px;
-}
-.navbar nav a.active,
-.navbar nav a:hover{color:#fff}
+  <script>document.documentElement.classList.add('js');</script>
 
-/* ================= BACKGROUND VIDEO ================= */
-.bg-video{
-  position:fixed;
-  inset:0;
-  z-index:-3;
-}
-.bg-video video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter:brightness(.6) contrast(1.25);
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-/* FALLBACK */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle at center,#0a0a1a 0%,#000 75%);
-  z-index:-2;
-}
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="explore.css">
+  <link rel="stylesheet" href="missions.css">
 
-/* ================= PAGE ================= */
-.page{
-  padding:110px 6% 80px;
-}
-
-/* ================= HEADER ================= */
-.page h1{
-  font-size:54px;
-  text-align:center;
-  margin-bottom:16px;
-  background:linear-gradient(135deg,#fff,#9bbcff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.quote{
-  text-align:center;
-  color:#9bbcff;
-  font-size:17px;
-  margin-bottom:70px;
-}
-
-/* ================= GRID ================= */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
-  gap:50px;
-}
-
-/* ================= CARD ================= */
-.card{
-  background:rgba(10,10,30,.85);
-  border-radius:22px;
-  padding:30px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 0 30px rgba(100,150,255,.18);
-  transition:.4s ease;
-}
-.card:hover{
-  transform:translateY(-8px);
-  box-shadow:
-    0 0 45px rgba(120,180,255,.6),
-    0 0 100px rgba(120,180,255,.3);
-}
-
-/* ================= MODEL ================= */
-model-viewer{
-  width:100%;
-  height:360px;
-  margin-bottom:22px;
-  --poster-color:transparent;
-}
-
-/* ================= TEXT ================= */
-.card h2{
-  text-align:center;
-  margin-bottom:16px;
-  font-size:24px;
-}
-ul{list-style:none}
-li{
-  font-size:15px;
-  line-height:1.7;
-  margin-bottom:10px;
-  padding-left:22px;
-  position:relative;
-}
-li::before{
-  content:"→";
-  position:absolute;
-  left:0;
-  color:#6b9aff;
-}
-
-/* ================= CONCLUSION ================= */
-.conclusion{
-  margin-top:90px;
-  padding:36px;
-  text-align:center;
-  background:rgba(10,10,30,.7);
-  border-radius:20px;
-  max-width:900px;
-  margin-inline:auto;
-  box-shadow:0 0 40px rgba(100,150,255,.25);
-  font-size:17px;
-  line-height:1.9;
-}
-
-/* ================= MOBILE ================= */
-@media(max-width:600px){
-  .page h1{font-size:40px}
-  .quote{font-size:15px}
-  model-viewer{height:260px}
-  .navbar nav a{margin-left:14px;font-size:13px}
-}
-</style>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 </head>
-
 <body>
 
+<canvas id="ambientCanvas" class="ambient" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="hud mono" aria-hidden="true"><span class="hud-square"></span><span id="hudText">00 · MISSION CONTROL</span></div>
+
 <header class="navbar">
-  <div>Dark Sky</div>
-  <nav>
-    <a href="index.html" target="_self">Home</a>
-    <a href="Expolre.html" target="_self">Let's Explore</a>
-    <a href="missions.html" class="active" target="_self">Missions</a>
-    <a href="survey.html" target="_self">Survey</a>
+  <a class="logo" href="index.html">DARK&nbsp;SKY</a>
+  <nav aria-label="Primary">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Let&rsquo;s Explore</a>
+    <a href="missions.html" class="active" aria-current="page">Missions</a>
+    <a href="survey.html">Survey</a>
   </nav>
+  <div class="nav-progress" aria-hidden="true"></div>
 </header>
 
-<!-- BACKGROUND VIDEO -->
-<div class="bg-video">
-  <video id="bgVideo" autoplay muted loop playsinline preload="auto">
-    <source src="black hole.mp4" type="video/mp4">
-  </video>
-</div>
-<div class="overlay"></div>
+<main>
 
-<section class="page">
-  <h1>Missions Gallery</h1>
-  <p class="quote">
-    “Every spacecraft here is a question humanity dared to ask the universe.”
+<!-- ═══ HERO ═══ -->
+<section class="ms-hero" data-hud="00 · MISSION CONTROL" aria-label="Mission control">
+  <p class="mono ex-eyebrow">THE SKY ASKED — &ldquo;WHAT ELSE IS OUT THERE?&rdquo;</p>
+  <h1 class="ms-title">
+    <span class="line-mask"><span class="line reveal-line">So we</span></span>
+    <span class="line-mask"><span class="line reveal-line accent-i">answered.</span></span>
+  </h1>
+  <p class="ms-sub">
+    Every spacecraft here is an answer. When city light buried the question,
+    these machines climbed above the glow — and they are still answering it
+    from the dark, right now, tonight.
   </p>
-
-  <div class="grid">
-
-    <!-- ISS -->
-    <div class="card">
-      <model-viewer src="la_station_spatiale_internationale_iss.glb" auto-rotate camera-controls exposure="1.3"></model-viewer>
-      <h2>International Space Station</h2>
-      <ul>
-        <li>Largest structure ever built in orbit</li>
-        <li>Continuously inhabited since 2000</li>
-        <li>Travels at 28,000 km/h</li>
-        <li>Symbol of global cooperation</li>
-      </ul>
-    </div>
-
-    <!-- JWST -->
-    <div class="card">
-      <model-viewer src="jwst_james_webb_space_telescope.glb" auto-rotate camera-controls exposure="1.35"></model-viewer>
-      <h2>James Webb Space Telescope</h2>
-      <ul>
-        <li>Most powerful telescope ever built</li>
-        <li>Infrared observations</li>
-        <li>Studies early galaxies</li>
-        <li>Located at L2 point</li>
-      </ul>
-    </div>
-
-    <!-- HUBBLE -->
-    <div class="card">
-      <model-viewer src="hubble_space_telescope.glb" auto-rotate camera-controls exposure="1.25"></model-viewer>
-      <h2>Hubble Space Telescope</h2>
-      <ul>
-        <li>Operating since 1990</li>
-        <li>Revolutionized astronomy</li>
-        <li>Captured iconic deep space images</li>
-        <li>Visible & UV spectrum</li>
-      </ul>
-    </div>
-
-    <!-- CASSINI -->
-    <div class="card">
-      <model-viewer src="cassini_huygens.glb" auto-rotate camera-controls exposure="1.2"></model-viewer>
-      <h2>Cassini–Huygens</h2>
-      <ul>
-        <li>Explored Saturn system</li>
-        <li>Discovered subsurface oceans</li>
-        <li>Studied rings & moons</li>
-        <li>Grand Finale in 2017</li>
-      </ul>
-    </div>
-
-    <!-- VOYAGER -->
-    <div class="card">
-      <model-viewer src="voyager_i__ii__nasa_interstellar_mission.glb" auto-rotate camera-controls exposure="1.15"></model-viewer>
-      <h2>Voyager 1</h2>
-      <ul>
-        <li>Farthest human-made object</li>
-        <li>Launched in 1977</li>
-        <li>Entered interstellar space</li>
-        <li>Still transmitting</li>
-      </ul>
-    </div>
-
-    <!-- PARKER -->
-    <div class="card">
-      <model-viewer src="parker_solar_probe.glb" auto-rotate camera-controls exposure="1.25"></model-viewer>
-      <h2>Parker Solar Probe</h2>
-      <ul>
-        <li>Closest spacecraft to the Sun</li>
-        <li>Heat shielded</li>
-        <li>Studies solar wind</li>
-        <li>Fastest spacecraft ever</li>
-      </ul>
-    </div>
-
-    <!-- CHANDRAYAAN -->
-    <div class="card">
-      <model-viewer src="chandrayaan-2_in_flight_configuration.glb" auto-rotate camera-controls exposure="1.2"></model-viewer>
-      <h2>Chandrayaan-2</h2>
-      <ul>
-        <li>India’s lunar mission</li>
-        <li>Mapped Moon surface</li>
-        <li>Detected water molecules</li>
-        <li>Orbiter still active</li>
-      </ul>
-    </div>
-
-    <!-- CURIOSITY -->
-    <div class="card">
-      <model-viewer src="nasa_curiosity_clean.glb" auto-rotate camera-controls exposure="1.3"></model-viewer>
-      <h2>Curiosity Rover</h2>
-      <ul>
-        <li>Car-sized Mars rover</li>
-        <li>Landed in 2012</li>
-        <li>Found evidence of ancient water</li>
-        <li>Still exploring Mars</li>
-      </ul>
-    </div>
-
-  </div>
-
-  <div class="conclusion">
-    These missions are more than machines — they are humanity’s curiosity given form.
-    Each one extends our reach deeper into the universe.
+  <div class="scroll-hint mono" id="scrollHint" aria-hidden="true">
+    <span>SCROLL — ENTER MISSION CONTROL</span>
+    <span class="hint-line"></span>
   </div>
 </section>
 
-<!-- ===== CLEANUP TO PREVENT CRASH ===== -->
-<script>
-window.addEventListener("beforeunload", () => {
-  document.querySelectorAll("model-viewer").forEach(m=>{
-    m.pause();
-    m.src="";
-  });
-  const v=document.getElementById("bgVideo");
-  if(v){
-    v.pause();
-    v.src="";
-  }
-});
-</script>
+<!-- ═══ LIVE TELEMETRY ═══ -->
+<section class="ms-telemetry" data-hud="01 · LIVE TELEMETRY" aria-labelledby="teleHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">01</span>
+    <p class="section-index mono">01 / LIVE TELEMETRY</p>
+    <h2 id="teleHead">Right now, out there</h2>
+    <p class="lede">These numbers are not decoration — they are computed live while you
+       read this, from each mission&rsquo;s real speed and position.</p>
+  </header>
 
+  <div class="tele-board">
+    <div class="tele-tile reveal-item">
+      <p class="mono tele-label"><span class="pulse"></span>VOYAGER 1 · DISTANCE FROM SUN</p>
+      <p class="tele-value mono" id="tV1">—</p>
+      <p class="mono tele-note">GAINING 16.9 KM EVERY SECOND · INTERSTELLAR SPACE</p>
+    </div>
+    <div class="tele-tile reveal-item">
+      <p class="mono tele-label"><span class="pulse"></span>VOYAGER 2 · DISTANCE FROM SUN</p>
+      <p class="tele-value mono" id="tV2">—</p>
+      <p class="mono tele-note">GAINING 15.3 KM EVERY SECOND · INTERSTELLAR SPACE</p>
+    </div>
+    <div class="tele-tile reveal-item">
+      <p class="mono tele-label"><span class="pulse"></span>ISS · CONTINUOUSLY INHABITED FOR</p>
+      <p class="tele-value mono" id="tISS">—</p>
+      <p class="mono tele-note">CIRCLING EARTH AT 7.66 KM/S · 16 SUNRISES A DAY</p>
+    </div>
+    <div class="tele-tile reveal-item">
+      <p class="mono tele-label"><span class="pulse"></span>RADIO DELAY TO VOYAGER 1</p>
+      <p class="tele-value mono" id="tDelay">—</p>
+      <p class="mono tele-note">ONE WAY, AT THE SPEED OF LIGHT · AND GROWING</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STAIRWAY OUT OF THE GLOW ═══ -->
+<section class="ms-stairs" data-hud="02 · OUT OF THE GLOW" aria-labelledby="stairHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">02</span>
+    <p class="section-index mono">02 / THE STAIRWAY OUT OF THE GLOW</p>
+    <h2 id="stairHead">Astronomy&rsquo;s great escape</h2>
+    <p class="lede">Our glow chased the telescopes off the rooftops, up the mountains,
+       and finally off the planet. Now fly the escape yourself —
+       <strong>hold LAUNCH</strong> and don&rsquo;t let go.</p>
+  </header>
+
+  <div class="ascent">
+    <div class="ascent-viewport" id="ascViewport">
+      <div class="stairs-layer on" data-step="0"><img src="mumbai.jpeg" alt="Mumbai's skyline glowing under a starless, light-polluted sky" loading="lazy"></div>
+      <div class="stairs-layer" data-step="1"><img src="hanle.jpeg" alt="The Milky Way arching over the Hanle observatory in Ladakh" loading="lazy"></div>
+      <div class="stairs-layer" data-step="2"><img src="sky_orbit.jpg" alt="Earth seen whole from space" loading="lazy"></div>
+      <div class="stairs-layer" data-step="3"><img src="sky_deep.jpg" alt="Webb's First Deep Field — thousands of galaxies in a speck of sky" loading="lazy"></div>
+      <model-viewer id="stairsModel" class="stairs-model"
+        camera-controls disable-pan disable-zoom auto-rotate rotation-per-second="15deg" auto-rotate-delay="0"
+        interaction-prompt="none" environment-image="neutral" exposure="1.25" shadow-intensity="0"
+        alt="3D model of the spacecraft at this altitude"></model-viewer>
+      <div class="stairs-scrim" aria-hidden="true"></div>
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <p class="orrery-tag mono" aria-hidden="true" id="stairsTag">REAL PHOTO · MUMBAI · GROUND LEVEL</p>
+
+      <div class="ascent-rail" aria-hidden="true">
+        <span class="rail-track"></span>
+        <span class="rail-mark" style="--rp:4%"><i></i>CITY</span>
+        <span class="rail-mark" style="--rp:38%"><i></i>HANLE</span>
+        <span class="rail-mark" style="--rp:48%"><i></i>KÁRMÁN</span>
+        <span class="rail-mark" style="--rp:67%"><i></i>HUBBLE</span>
+        <span class="rail-mark" style="--rp:96%"><i></i>L2</span>
+        <span class="rail-ship" id="railShip">▲</span>
+      </div>
+
+      <p class="ascent-stamp mono" id="ascStamp" aria-live="polite"></p>
+
+      <div class="ascent-info" aria-live="polite">
+        <p class="mono planet-index" id="stIndex">ZONE 01 / 04 · BORTLE 9</p>
+        <h3 id="stName">A Mumbai rooftop</h3>
+        <p class="planet-fact" id="stDesc">The sky most of us own: an amber haze, the Moon,
+           and two dozen survivors. Hold LAUNCH to leave it behind.</p>
+        <p class="mono ascent-stats"><span id="stStars">STARS: ≈ 25</span> · <span id="stWho">1.4 BILLION OF US WATCH FROM HERE</span></p>
+      </div>
+    </div>
+
+    <div class="ascent-controls">
+      <div class="asc-alt">
+        <span class="mono asc-alt-label">ALTITUDE</span>
+        <span class="asc-alt-value mono" id="ascAlt">14 M</span>
+      </div>
+      <div class="asc-btns">
+        <button id="btnAscend" class="btn-primary hold-btn" type="button"
+                aria-label="Hold to ascend">▲ HOLD TO LAUNCH</button>
+        <button id="btnDescend" class="btn-ghost hold-btn" type="button"
+                aria-label="Hold to descend">▼ FALL BACK</button>
+      </div>
+      <div class="planet-chips asc-chips" id="stairChips" role="group" aria-label="Jump to an altitude"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE FLEET ═══ -->
+<section class="ms-fleet" data-hud="03 · THE FLEET" aria-labelledby="fleetHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">03</span>
+    <p class="section-index mono">03 / THE FLEET</p>
+    <h2 id="fleetHead">Open a dossier</h2>
+    <p class="lede">Eight missions, one hangar. Select a spacecraft to load its real
+       3D model — then drag it around like you own it.</p>
+  </header>
+
+  <div class="fleet" id="fleet">
+    <nav class="fleet-list" id="fleetList" aria-label="Missions"></nav>
+
+    <div class="fleet-viewer">
+      <div class="fleet-plate" id="fleetPlate">
+        <model-viewer id="fleetModel"
+          camera-controls disable-pan auto-rotate rotation-per-second="13deg" auto-rotate-delay="800"
+          interaction-prompt="none" environment-image="neutral" exposure="1.2" shadow-intensity="0"
+          alt="3D model of the selected spacecraft"></model-viewer>
+        <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+        <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+        <p class="plate-status mono" id="plateStatus"><span class="pulse"></span>HANGAR BAY · DRAG TO INSPECT</p>
+        <p class="plate-loading mono" id="plateLoading">TRANSMITTING MODEL…</p>
+      </div>
+
+      <div class="fleet-info" aria-live="polite">
+        <div class="fleet-info-head">
+          <h3 id="fName">—</h3>
+          <span class="status-chip mono" id="fStatus">—</span>
+        </div>
+        <p class="fleet-brief" id="fBrief">—</p>
+        <div class="fleet-secret-box">
+          <p class="mono secret-label">◆ SECRET PULLED FROM THE DARK</p>
+          <p class="fleet-secret" id="fSecret">—</p>
+        </div>
+        <dl class="planet-stats fleet-stats">
+          <div><dt class="mono">AGENCY</dt><dd id="fAgency">—</dd></div>
+          <div><dt class="mono">LAUNCHED</dt><dd id="fLaunch">—</dd></div>
+          <div><dt class="mono">STATION</dt><dd id="fWhere">—</dd></div>
+          <div><dt class="mono">CLAIM TO FAME</dt><dd id="fFame">—</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE DEEP FIELD ═══ -->
+<section class="ms-deepfield" data-hud="04 · THE DEEP FIELD" aria-labelledby="dfHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">04</span>
+    <p class="section-index mono">04 / THE MOST IMPORTANT DARK PATCH IN HISTORY</p>
+    <h2 id="dfHead">Staring into nothing</h2>
+    <p class="lede">In 1995, astronomers pointed Hubble at the emptiest darkness they could
+       find — a patch the size of a sand grain held at arm&rsquo;s length — and let it
+       stare for ten days straight. Try it yourself.</p>
+  </header>
+
+  <div class="df-stage">
+    <div class="df-plate" id="dfPlate">
+      <canvas id="dfCanvas" aria-hidden="true"></canvas>
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <p class="orrery-tag mono" aria-hidden="true">HUBBLE DEEP FIELD · SIMULATED EXPOSURE</p>
+      <p class="df-empty mono" id="dfEmpty">THIS IS WHAT YOUR EYE SEES · NOTHING</p>
+    </div>
+    <div class="df-console" aria-live="polite">
+      <button class="btn-primary" id="dfBtn" type="button">Begin the 10-day stare <span aria-hidden="true">◉</span></button>
+      <dl class="planet-stats df-stats">
+        <div><dt class="mono">EXPOSURE</dt><dd class="mono" id="dfDay">DAY 0 / 10</dd></div>
+        <div><dt class="mono">GALAXIES FOUND</dt><dd class="mono" id="dfCount">0</dd></div>
+      </dl>
+      <p class="planet-fact" id="dfNote">Every smudge that appears is not a star.
+         It is an entire galaxy — hundreds of billions of stars, each perhaps with worlds.</p>
+      <p class="mono df-punch" id="dfPunch" hidden>THE DARK WAS NEVER EMPTY.<br>IT WAS FULL THE WHOLE TIME.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HISTORY ═══ -->
+<section class="ms-history" data-hud="05 · HOW WE LEARNED TO LEAVE" aria-labelledby="histHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">05</span>
+    <p class="section-index mono">05 / A BRIEF HISTORY OF LEAVING HOME</p>
+    <h2 id="histHead">First we lost the sky. Then we left.</h2>
+    <p class="lede">From the night London&rsquo;s glow blinded the world&rsquo;s most famous
+       observatory to telescopes parked a million miles out — the whole escape, on one line.</p>
+  </header>
+
+  <div class="hist-wrap" id="histWrap">
+  <p class="hist-year" id="histYear" aria-hidden="true">1948</p>
+  <div class="hist-spine" aria-hidden="true"><span class="spine-grad"></span><span class="spine-comet" aria-hidden="true"></span></div>
+  <ol class="milestones" id="milestonesList">
+    <li class="milestone"><span class="mono ms-year">1948</span><div><h3>London&rsquo;s glow closes Greenwich</h3><p>The Royal Observatory — the place the world sets its clocks by — can no longer see the stars through the city&rsquo;s light. Astronomy begins its escape.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">1957</span><div><h3>Sputnik 1</h3><p>A polished metal sphere beeps from orbit. The Space Age begins — and the whole world listens in.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">1961</span><div><h3>Yuri Gagarin</h3><p>The first human sees Earth from space and calls it blue. He is 27 years old.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">1969</span><div><h3>Apollo 11</h3><p>Six hundred million people watch two humans walk on the Moon — the furthest footprints ever made.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">1977</span><div><h3>The Voyagers</h3><p>Two probes leave with golden records of Earth&rsquo;s music. Both are still flying, still calling home.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">1990</span><div><h3>Hubble &amp; the Pale Blue Dot</h3><p>Hubble opens its eye; Voyager 1 turns back and photographs Earth as a single pixel of light.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2000</span><div><h3>Humans move in</h3><p>The ISS takes its first long-term crew. No one has been off-world-less since — 26 years of someone always up there.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2004</span><div><h3>Cassini reaches Saturn</h3><p>Thirteen years among the rings. Its moon-lander Huygens touches down on Titan — the most distant landing ever.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2012</span><div><h3>Curiosity sticks the landing</h3><p>A rover the size of a car is lowered onto Mars by a rocket-powered sky crane. It finds an ancient riverbed.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2015</span><div><h3>Pluto, up close</h3><p>New Horizons crosses the whole solar system in nine years and finds a heart-shaped glacier waiting.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2019</span><div><h3>Chandrayaan-2</h3><p>India&rsquo;s orbiter begins mapping the Moon in detail — groundwork for Chandrayaan-3&rsquo;s historic south-pole landing.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">2021</span><div><h3>James Webb unfolds</h3><p>The largest space telescope ever built opens like origami, a million miles out, and sees the first galaxies.</p></div></li>
+    <li class="milestone"><span class="mono ms-year">NOW</span><div><h3>Your turn to look up</h3><p>Every one of these machines was built by people who could still see the stars. Keep the sky dark, and the next one might be yours.</p></div></li>
+  </ol>
+  </div>
+</section>
+
+<!-- ═══ OUTRO ═══ -->
+<section class="ex-outro">
+  <h2 class="ex-outro-title">
+    <span class="line-mask"><span class="line reveal-line">Curiosity, given form —</span></span>
+    <span class="line-mask"><span class="line reveal-line accent-i">and pointed at the dark.</span></span>
+  </h2>
+  <div class="ex-outro-cta">
+    <a class="btn-primary" href="survey.html">Take the survey <span aria-hidden="true">→</span></a>
+    <a class="btn-ghost" href="explore.html">Back to exploring</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer footer-slim">
+  <p class="footer-sign mono">A PROJECT BY ROYCE DCUNHA · 3D MODELS: NASA / ESA / ISRO ARCHIVES · © 2026</p>
+</footer>
+
+<script src="missions.js"></script>
 </body>
 </html>

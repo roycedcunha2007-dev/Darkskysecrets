@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore — Dark Sky</title>
+  <meta name="description" content="An interactive tour of the universe — cosmic objects, the solar system, and the real spacecraft humanity sent to explore it. Part of the Dark Sky project.">
+  <meta name="theme-color" content="#04050a">
+  <link rel="canonical" href="https://darkskysecrets.space/explore.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dark Sky">
+  <meta property="og:url" content="https://darkskysecrets.space/explore.html">
+  <meta property="og:title" content="Explore — Dark Sky">
+  <meta property="og:description" content="An interactive tour of the universe — cosmic objects, the solar system, and the real spacecraft humanity sent to explore it.">
+  <meta property="og:image" content="https://darkskysecrets.space/sky_deep.jpg">
+  <meta property="og:image:alt" content="Webb's First Deep Field — thousands of galaxies in a speck of sky">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Explore — Dark Sky">
+  <meta name="twitter:description" content="An interactive tour of the universe — cosmic objects, the solar system, and the real spacecraft humanity sent to explore it.">
+  <meta name="twitter:image" content="https://darkskysecrets.space/sky_deep.jpg">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="explore.css">
+</head>
+<body>
+
+<canvas id="ambientCanvas" class="ambient" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="hud mono" aria-hidden="true"><span class="hud-square"></span><span id="hudText">00 · EXPLORE</span></div>
+
+<header class="navbar">
+  <a class="logo" href="index.html">DARK&nbsp;SKY</a>
+  <nav aria-label="Primary">
+    <a href="index.html">Home</a>
+    <a href="explore.html" class="active" aria-current="page">Let&rsquo;s Explore</a>
+    <a href="missions.html">Missions</a>
+    <a href="survey.html">Survey</a>
+  </nav>
+  <div class="nav-progress" aria-hidden="true"></div>
+</header>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section class="ex-hero" data-hud="00 · EXPLORE" data-inview aria-label="Explore the universe">
+  <div class="ex-hero-grid">
+    <div class="ex-hero-copy">
+      <p class="mono ex-eyebrow">DARK SKY · EXPLORATION HUB</p>
+      <h1 class="ex-title">
+        <span class="line-mask"><span class="line reveal-line">Leave the</span></span>
+        <span class="line-mask"><span class="line reveal-line">city behind.</span></span>
+        <span class="line-mask"><span class="line reveal-line accent-i">Meet the universe.</span></span>
+      </h1>
+      <p class="ex-hero-sub">
+        You&rsquo;ve seen what light pollution takes away. Here&rsquo;s what&rsquo;s waiting
+        on the other side of a dark sky — the objects that fill it, the worlds
+        next door, and the machines we built to reach them.
+      </p>
+      <div class="ex-hero-cta">
+        <a class="btn-primary" href="#objects">Begin the tour <span aria-hidden="true">↓</span></a>
+        <span class="mono ex-hero-meta">8 WORLDS · 88 CONSTELLATIONS · 1 SPEED OF LIGHT</span>
+      </div>
+    </div>
+
+    <div class="ex-hero-stage">
+      <div class="orbit-ring" aria-hidden="true"></div>
+      <div class="orbit-ring two" aria-hidden="true"></div>
+      <canvas id="heroPlanet" aria-label="A slowly turning planet, its night side glittering with city lights"></canvas>
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <p class="stage-tag mono" aria-hidden="true"><span class="pulse"></span>SOMEWHERE, ANOTHER WORLD · ITS CITIES GLOW TOO</p>
+    </div>
+  </div>
+
+  <div class="scroll-hint mono" id="scrollHint" aria-hidden="true">
+    <span>SCROLL TO EXPLORE</span>
+    <span class="hint-line"></span>
+  </div>
+</section>
+
+<!-- ═══ COSMIC OBJECTS ═══ -->
+<section class="ex-objects" id="objects" data-hud="01 · COSMIC OBJECTS" data-inview aria-labelledby="objHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">01</span>
+    <p class="section-index mono">01 / COSMIC OBJECTS</p>
+    <h2 id="objHead">What fills the dark</h2>
+    <p class="lede">Zoom out from a single star to the largest structures that exist.
+       Everything here is invisible from a Bortle 9 city — and ordinary from a dark sky.</p>
+  </header>
+
+  <div class="object-list">
+
+    <article class="object reveal-item">
+      <div class="object-viz">
+        <div class="viz-star" aria-hidden="true"><span class="star-core"></span><span class="star-corona"></span></div>
+      </div>
+      <div class="object-copy">
+        <p class="mono object-scale">TYPICAL SCALE · 1.4 MILLION KM</p>
+        <h3>Stars</h3>
+        <p class="object-lede">Colossal spheres of plasma, fusing hydrogen into starlight for billions of years.</p>
+        <ul class="object-facts">
+          <li>Held together by their own gravity against the pressure of fusion</li>
+          <li>Forge the heavy elements that make up planets — and you</li>
+          <li>Our Sun is an average yellow dwarf, halfway through its life</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="object reveal-item">
+      <div class="object-viz">
+        <div class="viz-nebula" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="object-copy">
+        <p class="mono object-scale">TYPICAL SCALE · 100 LIGHT-YEARS</p>
+        <h3>Nebulae</h3>
+        <p class="object-lede">Vast clouds of gas and dust — the nurseries where new stars ignite.</p>
+        <ul class="object-facts">
+          <li>Lit from within by the radiation of the stars forming inside them</li>
+          <li>Some are the glowing wreckage of stars that already died</li>
+          <li>The Orion Nebula is faintly visible to the naked eye — under a dark sky</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="object reveal-item">
+      <div class="object-viz">
+        <div class="viz-blackhole" aria-hidden="true"><span class="bh-disk"></span><span class="bh-ring"></span><span class="bh-core"></span></div>
+      </div>
+      <div class="object-copy">
+        <p class="mono object-scale">EVENT HORIZON · UP TO BILLIONS OF KM</p>
+        <h3>Black Holes</h3>
+        <p class="object-lede">Gravity so extreme that not even light can climb back out.</p>
+        <ul class="object-facts">
+          <li>Born when the most massive stars collapse under their own weight</li>
+          <li>Superheated matter spirals in, blazing as an accretion disk</li>
+          <li>A supermassive one anchors the centre of nearly every galaxy</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="object reveal-item">
+      <div class="object-viz">
+        <div class="viz-galaxy" aria-hidden="true"><span class="gx-arms"></span><span class="gx-core"></span></div>
+      </div>
+      <div class="object-copy">
+        <p class="mono object-scale">TYPICAL SCALE · 100,000 LIGHT-YEARS</p>
+        <h3>Galaxies</h3>
+        <p class="object-lede">Islands of hundreds of billions of stars, turning slowly through the dark.</p>
+        <ul class="object-facts">
+          <li>Come as majestic spirals, smooth ellipticals and chaotic irregulars</li>
+          <li>Our Milky Way holds 200+ billion stars and countless worlds</li>
+          <li>Andromeda, our nearest large neighbour, is on a collision course with us</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="object reveal-item">
+      <div class="object-viz">
+        <canvas class="viz-web" width="440" height="440" aria-hidden="true"></canvas>
+      </div>
+      <div class="object-copy">
+        <p class="mono object-scale">LARGEST SCALE · 100+ MILLION LIGHT-YEARS</p>
+        <h3>The Cosmic Web</h3>
+        <p class="object-lede">On the grandest scale, galaxies string together into a glowing web of filaments.</p>
+        <ul class="object-facts">
+          <li>Superclusters of thousands of galaxies sit at the web&rsquo;s bright knots</li>
+          <li>Between them lie vast, near-empty voids hundreds of millions of light-years across</li>
+          <li>Our galaxy belongs to Laniakea — a supercluster of 100,000 galaxies</li>
+        </ul>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══ SOLAR SYSTEM ═══ -->
+<section class="ex-solar" data-hud="02 · THE SOLAR SYSTEM" data-inview aria-labelledby="solarHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">02</span>
+    <p class="section-index mono">02 / THE SOLAR SYSTEM</p>
+    <h2 id="solarHead">Our own back yard</h2>
+    <p class="lede">Eight worlds circling one ordinary star. Tap a planet to pull up its file —
+       or just watch them run their orbits.</p>
+  </header>
+
+  <div class="solar-stage">
+    <div class="orrery-wrap">
+      <canvas id="orrery" aria-hidden="true"></canvas>
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <p class="orrery-tag mono" aria-hidden="true">NOT TO SCALE · TAP A PLANET</p>
+    </div>
+
+    <aside class="planet-panel" id="planetPanel" aria-live="polite">
+      <p class="mono planet-index" id="pIndex">PLANET 03 / 08</p>
+      <h3 id="pName">Earth</h3>
+      <p class="planet-fact" id="pFact">The only world we know of where someone is looking back up at the stars.</p>
+      <dl class="planet-stats">
+        <div><dt class="mono">DIAMETER</dt><dd id="pDia">12,742 km</dd></div>
+        <div><dt class="mono">FROM SUN</dt><dd id="pDist">1.00 AU</dd></div>
+        <div><dt class="mono">YEAR</dt><dd id="pYear">365 days</dd></div>
+        <div><dt class="mono">MOONS</dt><dd id="pMoons">1</dd></div>
+      </dl>
+    </aside>
+  </div>
+
+  <div class="planet-chips" id="planetChips" role="tablist" aria-label="Select a planet"></div>
+</section>
+
+<!-- ═══ CONSTELLATION ATLAS ═══ -->
+<section class="ex-constellations" data-hud="03 · THE SKY ITSELF" data-inview aria-labelledby="constHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">03</span>
+    <p class="section-index mono">03 / THE SKY ITSELF</p>
+    <h2 id="constHead">Learn to read the night</h2>
+    <p class="lede">For thousands of years the constellations were humanity&rsquo;s map, calendar
+       and storybook. Pick one and watch it draw itself — then go find it outside.</p>
+  </header>
+
+  <div class="const-stage">
+    <div class="const-wrap">
+      <canvas id="constCanvas" aria-hidden="true"></canvas>
+      <i class="tick tl" aria-hidden="true"></i><i class="tick tr" aria-hidden="true"></i>
+      <i class="tick bl" aria-hidden="true"></i><i class="tick br" aria-hidden="true"></i>
+      <p class="orrery-tag mono" aria-hidden="true">NORTHERN SKY · SIMULATED</p>
+    </div>
+    <aside class="const-panel" aria-live="polite">
+      <p class="mono planet-index" id="cIndex">CONSTELLATION 01 / 06</p>
+      <h3 id="cName">Orion</h3>
+      <p class="planet-fact" id="cStory">The Hunter — the most recognisable figure in the winter sky, visible from every inhabited place on Earth.</p>
+      <dl class="planet-stats">
+        <div><dt class="mono">MEANING</dt><dd id="cMeaning">The Hunter</dd></div>
+        <div><dt class="mono">BEST SEEN</dt><dd id="cSeason">January</dd></div>
+        <div><dt class="mono">BRIGHTEST</dt><dd id="cStar">Rigel</dd></div>
+        <div><dt class="mono">FIND IT BY</dt><dd id="cKey">The 3-star belt</dd></div>
+      </dl>
+    </aside>
+  </div>
+  <div class="planet-chips" id="constChips" role="tablist" aria-label="Select a constellation"></div>
+</section>
+
+<!-- ═══ RIDE A PHOTON ═══ -->
+<section class="ex-photon" data-hud="04 · THE SPEED OF LIGHT" data-inview aria-labelledby="photonHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">04</span>
+    <p class="section-index mono">04 / THE SPEED OF LIGHT</p>
+    <h2 id="photonHead">Ride a photon</h2>
+    <p class="lede">Light is the fastest thing that can exist — 299,792 km every second.
+       Pick a destination and race it there. The Moon run happens in true real time.</p>
+  </header>
+
+  <div class="photon-console">
+    <div class="photon-labels mono">
+      <span>EARTH</span>
+      <span class="photon-dest-label" id="photonDestLabel">THE MOON</span>
+    </div>
+    <div class="photon-track" id="photonTrack">
+      <span class="photon-line" aria-hidden="true"></span>
+      <span class="photon-progress" id="photonProgress" aria-hidden="true"></span>
+      <span class="photon-dot" id="photonDot" aria-hidden="true"></span>
+    </div>
+    <dl class="photon-readout">
+      <div><dt class="mono">ELAPSED LIGHT-TIME</dt><dd class="photon-time mono" id="photonTime">0.00 s</dd></div>
+      <div><dt class="mono">PLAYBACK</dt><dd class="mono" id="photonSpeed">REAL TIME</dd></div>
+    </dl>
+    <p class="photon-status mono" id="photonStatus">SELECT A DESTINATION BELOW →</p>
+  </div>
+  <div class="planet-chips" id="photonChips" role="group" aria-label="Choose a light destination"></div>
+</section>
+
+<!-- ═══ THE COSMIC CALENDAR ═══ -->
+<section class="ex-calendar" data-hud="05 · THE COSMIC CALENDAR" data-inview aria-labelledby="calHead">
+  <header class="sec-head">
+    <span class="ghost-num" aria-hidden="true">05</span>
+    <p class="section-index mono">05 / THE COSMIC CALENDAR</p>
+    <h2 id="calHead">13.8 billion years, in&nbsp;one</h2>
+    <p class="lede">Squeeze the whole history of the universe into a single year. The Big Bang
+       is January 1st. Drag across it — and notice how late we arrive.</p>
+  </header>
+
+  <div class="cal-readout" aria-live="polite">
+    <p class="mono cal-date" id="calDate">JANUARY 1 · 00:00:00</p>
+    <h3 id="calTitle">The Big Bang</h3>
+    <p class="planet-fact" id="calDesc">Space, time, matter and energy all begin at once. The universe is a searing, formless fog.</p>
+    <p class="mono cal-ago" id="calAgo">13.8 BILLION YEARS AGO</p>
+  </div>
+
+  <div class="cal-track" id="calTrack" role="slider" tabindex="0"
+       aria-label="Scrub through the cosmic calendar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="cal-fill" id="calFill" aria-hidden="true"></div>
+    <div class="cal-months mono" aria-hidden="true">
+      <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span>
+      <span>JUL</span><span>AUG</span><span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
+    </div>
+    <div class="cal-events" id="calEvents" aria-hidden="true"></div>
+    <div class="cal-scrub" id="calScrub" aria-hidden="true"></div>
+  </div>
+  <p class="cal-foot mono" id="calFoot">◂ DRAG ACROSS THE YEAR · OR TAP A MOMENT ▸</p>
+</section>
+
+<!-- ═══ OUTRO — the question ═══ -->
+<section class="ex-outro" data-inview>
+  <p class="mono outro-eyebrow">EVERY CLEAR NIGHT · FOR 300,000 YEARS</p>
+  <h2 class="ex-outro-title">
+    <span class="line-mask"><span class="line reveal-line">The dark sky has asked us</span></span>
+    <span class="line-mask"><span class="line reveal-line">only one question —</span></span>
+    <span class="line-mask"><span class="line reveal-line accent-i">&ldquo;what else is out there?&rdquo;</span></span>
+  </h2>
+  <p class="mono outro-handoff">WE NEVER STOPPED ANSWERING ▸</p>
+  <div class="ex-outro-cta">
+    <a class="btn-primary" href="missions.html">Hear our answer <span aria-hidden="true">→</span></a>
+    <a class="btn-ghost" href="survey.html">Take the survey</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer footer-slim">
+  <p class="footer-sign mono">A PROJECT BY ROYCE DCUNHA · MADE UNDER A BORTLE 9 SKY · © 2026</p>
+</footer>
+
+<script src="explore.js"></script>
+</body>
+</html>

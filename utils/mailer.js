@@ -27,7 +27,16 @@ async function sendEmail(subject, text) {
     text,
   });
 
-  console.log("Email sent successfully", response);
+  // The Resend SDK does NOT throw on API errors — it returns { data, error }.
+  // Without this check, rejected sends (unverified domain, bad from address,
+  // free-tier restrictions) are silently logged as "success".
+  if (response && response.error) {
+    throw new Error(
+      `Resend rejected the email: ${response.error.message || JSON.stringify(response.error)}`
+    );
+  }
+
+  console.log("Email sent successfully", response && response.data);
   return response;
 }
 

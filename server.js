@@ -1,8 +1,20 @@
-const dns = require("dns");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
-
 require("dotenv").config();
 
+// Local-network workaround: forcing Google DNS fixes Mongo SRV lookups on
+// some home ISPs, but BREAKS on many hosting providers (outbound UDP to
+// 8.8.8.8 is often blocked), silently killing Mongo and Resend in deployment.
+// Keep it on locally, auto-disable on known hosts / production.
+const onHostingPlatform =
+  process.env.NODE_ENV === "production" ||
+  process.env.RENDER || process.env.VERCEL || process.env.RAILWAY_ENVIRONMENT ||
+  process.env.DYNO || process.env.FLY_APP_NAME;
+if (!onHostingPlatform && process.env.USE_GOOGLE_DNS !== "0") {
+  const dns = require("dns");
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+  console.log("Using Google DNS resolvers (local workaround; disabled on hosting platforms)");
+}
+
+const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const Survey = require("./models/Survey");
@@ -10,6 +22,35 @@ const Contact = require("./models/Contact");
 const sendEmail = require("./utils/mailer");
 
 const app = express();
+
+// Notification emails must never fail a request that already saved data.
+// Awaited (not fire-and-forget) so it also completes on serverless hosts,
+// which freeze the process as soon as the response is sent.
+async function notify(subject, text) {
+  try {
+    await sendEmail(subject, text);
+  } catch (err) {
+    console.error("Email notification failed (data was saved):", err.message);
+  }
+}
+
+// tiny in-memory rate limiter for public POST endpoints
+const hits = new Map();
+function rateLimit(max, windowMs) {
+  return (req, res, next) => {
+    const key = req.ip + ":" + req.path;
+    const now = Date.now();
+    const rec = hits.get(key) || { count: 0, start: now };
+    if (now - rec.start > windowMs) { rec.count = 0; rec.start = now; }
+    rec.count++;
+    hits.set(key, rec);
+    if (hits.size > 5000) hits.clear(); // keep memory bounded
+    if (rec.count > max) {
+      return res.status(429).json({ success: false, message: "Too many requests — please try again later" });
+    }
+    next();
+  };
+}
 
 function adminAuth(req, res, next) {
   const password = req.headers["x-admin-password"];
@@ -26,6 +67,18 @@ function adminAuth(req, res, next) {
 function validateSurvey(req, res, next) {
   const errors = [];
   const body = req.body;
+
+  // cap free-text lengths so nobody can store essays (or worse) in the DB
+  const MAX_TEXT = 2000;
+  ["reasonInvestment", "priorityOverEarth", "astronomyPerception", "humanIdentity", "awarenessTrend"]
+    .forEach((f) => {
+      if (typeof body[f] === "string" && body[f].length > MAX_TEXT) {
+        errors.push(`${f} must be under ${MAX_TEXT} characters`);
+      }
+    });
+  if (typeof body.name === "string" && body.name.length > 120) {
+    errors.push("Name must be under 120 characters");
+  }
 
   if (!body.name || typeof body.name !== "string" || body.name.trim().length === 0) {
     errors.push("Name is required");
@@ -174,8 +227,9 @@ function validateSurvey(req, res, next) {
   next();
 }
 
-app.use(express.json());
-app.use(express.static("public"));
+app.use(express.json({ limit: "64kb" }));
+// resolve relative to this file, not the process cwd
+app.use(express.static(path.join(__dirname, "public")));
 
 const uri = process.env.MONGO_URI;
 if (!uri) {
@@ -198,7 +252,7 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.post("/submit-survey", validateSurvey, async (req, res) => {
+app.post("/submit-survey", rateLimit(6, 10 * 60 * 1000), validateSurvey, async (req, res) => {
   try {
     const sanitizedData = {
       name: req.body.name.trim(),
@@ -223,42 +277,53 @@ app.post("/submit-survey", validateSurvey, async (req, res) => {
 
     const survey = new Survey(sanitizedData);
     await survey.save();
-    await sendEmail(
-      "New Survey Submitted",
-      `New survey submitted by: ${sanitizedData.name}`
-    );
+    // an email hiccup must not turn a saved survey into a 500
+    await notify("New Survey Submitted", `New survey submitted by: ${sanitizedData.name}`);
 
     res.json({
       success: true,
       message: "Survey response saved successfully",
     });
   } catch (error) {
-    console.error("Error saving survey or sending survey email:", error);
+    console.error("Error saving survey:", error);
     res.status(500).json({
       success: false,
       message: "Failed to save survey response",
-      error: error.message,
     });
   }
 });
 
-app.post("/contact", async (req, res) => {
+app.post("/contact", rateLimit(5, 10 * 60 * 1000), async (req, res) => {
   try {
-    if (!req.body.name || !req.body.email || !req.body.message) {
+    const name = typeof req.body.name === "string" ? req.body.name.trim() : "";
+    const email = typeof req.body.email === "string" ? req.body.email.trim() : "";
+    const message = typeof req.body.message === "string" ? req.body.message.trim() : "";
+
+    if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
         message: "Name, email, and message are required",
       });
     }
+    if (name.length > 120 || email.length > 254 || message.length > 3000) {
+      return res.status(400).json({
+        success: false,
+        message: "One of the fields is too long",
+      });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
+    }
 
-    const contact = new Contact(req.body);
+    // only the fields we expect — never the raw request body
+    const contact = new Contact({ name, email, message });
     await contact.save();
-    await sendEmail(
+    await notify(
       "New Contact Message",
-      `Name: ${req.body.name}
-Email: ${req.body.email}
-Message:
-${req.body.message}`
+      `Name: ${name}\nEmail: ${email}\nMessage:\n${message}`
     );
 
     res.json({
@@ -266,11 +331,10 @@ ${req.body.message}`
       message: "Contact message sent successfully",
     });
   } catch (error) {
-    console.error("Error saving contact or sending contact email:", error);
+    console.error("Error saving contact:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to save contact message or send email",
-      error: error.message,
+      message: "Failed to save contact message",
     });
   }
 });
